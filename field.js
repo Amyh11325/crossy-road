@@ -2,7 +2,7 @@ import * as Constants from "./constants.js"
 
 export class Field {
     constructor() {
-        this.rows= Array(Constants.ROWS_AHEAD + Constants.ROWS_BEHIND);
+        this.rows = Array(Constants.ROWS_AHEAD + Constants.ROWS_BEHIND);
         this.populate_field();
     }
 
@@ -11,6 +11,12 @@ export class Field {
         for (let row_num = starting_row_number; row_num < Constants.ROWS_AHEAD; row_num++) {
             this.rows[row_num + Constants.ROWS_BEHIND] = new Row(row_num);
         }
+    }
+    
+    progress() {
+        this.rows.shift();
+        let max_row_number = this.rows.at(-1).row_num;
+        this.rows.push(new Row(max_row_number + 1));
     }
 }
 
@@ -48,9 +54,23 @@ export class Row {
 }
 
 export class Tile {
-    constructor(index, row_num, type) {
+    constructor(index, row_num, row_type) {
         this.index = index;
         this.row_num = row_num;
-        this.type = type;
+        this.type = this.get_tile_type(index, row_type);
+    }
+
+    get_tile_type(index, row_type) {
+        if (index < Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1|| index > Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            if (row_type == 0) {
+                return 2;
+            }
+            else if (row_type == 1) {
+                return 3;
+            }
+        }
+        else {
+            return row_type;
+        }
     }
 }

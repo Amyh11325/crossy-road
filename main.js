@@ -4,24 +4,6 @@ import * as Constants from "./constants.js"
 
 const { Vector, Vector3, vec, vec3, vec4, color, hex_color, Shader, Matrix, Mat4, Light, Shape, Material, Scene } = tiny;
 
-const Minimal_Shape =
-    class Minimal_Shape extends tiny.Vertex_Buffer {
-        // **Minimal_Shape** an even more minimal triangle, with three
-        // vertices each holding a 3D position and a color.
-        constructor() {
-            super("position", "color");
-            // Describe the where the points of a triangle are in space, and also describe their colors:
-            // TODO: Edit the position and color here
-            this.arrays.position = [
-                vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 1, 0),
-            ];
-            this.arrays.color = [
-                color(1, 0, 0, 1), color(0, 1, 0, 1), color(0, 0, 1, 1), 
-            ];
-        }
-    }
-
-
 export class Main_Scene extends Scene {
     constructor() {
         super();
@@ -36,45 +18,89 @@ export class Main_Scene extends Scene {
         this.materials = {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
             road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#151520")}),
+            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#101015")}),
             grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#95e06c")}),
+            grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
             cube: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: 1, specularity: 1, color: hex_color("#a9fff7")})
         };
 
         Constants.CAMERA_PERSPECTIVE === "crossy" ?
-            this.initial_camera_location = Mat4.look_at(vec3(-4, 7, Constants.ROW_WIDTH / 2 + 1.5), vec3(1.5, 1, Constants.ROW_WIDTH / 2), vec3(0, 1, 0))
+            this.camera_location = Mat4.look_at(vec3(-4, 7, Constants.ROW_WIDTH / 2 + 2), vec3(1.5, 1, Constants.ROW_WIDTH / 2 + .5), vec3(0, 1, 0))
             :
-            this.initial_camera_location = Mat4.look_at(vec3(0, 8, Constants.ROW_WIDTH / 2), vec3(0, 0, Constants.ROW_WIDTH / 2), vec3(1, 0, 0));
-        
+            this.camera_location = Mat4.look_at(vec3(0, 8, Constants.ROW_WIDTH / 2), vec3(0, 0, Constants.ROW_WIDTH / 2), vec3(1, 0, 0));
+    }
+
+    make_control_panel() {
+        this.key_triggered_button("Move Forward", ["w"], this.move_forward);
+        this.key_triggered_button("Move Backwards", ["s"], this.move_backward);
+        this.key_triggered_button("Move Left", ["a"], this.move_left);
+        this.key_triggered_button("Move Right", ["d"], this.move_right);
+        this.key_triggered_button("Restart", ["r"], this.restart_game);
+    }
+
+    move_forward() { // forward callback
+        console.log("forward");
+        this.game.player.row_num++;
+        if (this.game.score < this.game.player.row_num) { // moving past the best score
+            this.increment_score();
+            this.generate_new_row();
+        }
+    }
+
+    move_backward() { // backward callback
+        console.log("backwards");
+        this.game.player.row_num--;
+        if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
+            this.restart_game();
+        }
+    }
+
+    move_left() { // left callback
+        console.log("left");
+        if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            this.game.player.index--;
+        }
+    }
+
+    move_right() { // right callback
+        console.log("right");
+        if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            this.game.player.index++;
+        }
+    }
+
+    restart_game() {
+        this.game = new Game();
     }
 
     display(context, program_state) {        
         
-        this.camera_setup(context, program_state);
-        this.lighting_setup(program_state);
+        if (!this.setup) {
+            this.camera_setup(context, program_state);
+            this.lighting_setup(program_state);
+            this.setup = true;
+        }
 
         this.draw_field(context, program_state);
         this.draw_player(context, program_state);
+        this.move_camera(context, program_state);
     }
 
     camera_setup(context, program_state) {
-        if (!context.scratchpad.controls) {
-            this.children.push(context.scratchpad.controls = new defs.Movement_Controls());
-            // Define the global camera and projection matrices, which are stored in program_state.
-            program_state.set_camera(this.initial_camera_location);
-        }
+        program_state.set_camera(this.camera_location);
 
         program_state.projection_transform = Mat4.perspective(
             Math.PI / 4, context.width / context.height, .1, 1000);
     }
 
     lighting_setup(program_state) {
-        program_state.lights = [new Light(vec4(0, 10, Constants.ROW_WIDTH / 2, 1), color(1, 1, 1, 1), 100)];
+        program_state.lights = [new Light(vec4(0, 10, Constants.ROW_WIDTH / 2, 1), color(.973, .957, .89, 1), 1000)];
     }
 
     draw_field(context, program_state) { // draw the field from the current game state
         (this.game.field.rows).forEach(row => {
             (row.row).forEach(tile => {
-                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 0, (tile.index + .5)))
+                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
                     .times(Mat4.scale(.5, .5, .5));
                 this.shapes.cube.draw(context, program_state, model_transform, this.get_field_material(tile.type));
             });
@@ -83,9 +109,29 @@ export class Main_Scene extends Scene {
 
     draw_player(context, program_state) { // draw the player character
         // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
-        let model_transform = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index / 2))
-            .times(Mat4.scale(.4, .4, .4))
+        let model_transform = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index))
+            .times(Mat4.scale(.4, .5, .4))
+        this.player_transform = model_transform;
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
+    }
+
+    move_camera(context, program_state) { // move the camera forward if needed
+        if (this.game.player.row_num >= this.game.score) { // only move if we pass the best score
+
+            // perform smoothing, modify at your own risk
+            let desired_position = this.camera_location.times(Mat4.inverse(Mat4.translation(this.game.score - 1, 0, 0)));
+            desired_position = desired_position.map((x, i) => Vector.from(Mat4.inverse(program_state.camera_transform)[i]).mix(x, .025));
+            program_state.set_camera((desired_position));
+        }
+    }
+
+    increment_score() {
+        this.game.score++;
+        console.log(this.game.score);
+    }
+
+    generate_new_row() {
+        this.game.field.progress();
     }
 
     get_field_material(material_index) { // check what material corresponds to a given index
@@ -94,6 +140,10 @@ export class Main_Scene extends Scene {
                 return this.materials.road;
             case 1:
                 return this.materials.grass;
+            case 2:
+                return this.materials.road_bound;
+            case 3:
+                return this.materials.grass_bound;
             default:
                 return this.materials.generic;
         }
