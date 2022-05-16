@@ -184,12 +184,12 @@ export class Main_Scene extends Scene {
             model_transform = model_transform.times(Mat4.rotation(0, 0, 1, 0));
             this.game.player.player_rotation = 0;
         } else if (this.game.player.forward[0] === -1) {
-            model_transform = model_transform.times(Mat4.rotation(180, 0, 1, 0));
+            model_transform = model_transform.times(Mat4.rotation(Math.PI, 0, 1, 0));
             console.log(model_transform[0]);
         } else if (this.game.player.forward[2] === 1) {
-            model_transform = model_transform.times(Mat4.rotation(270, 0, 1, 0));
+            model_transform = model_transform.times(Mat4.rotation(-Math.PI/2.0, 0, 1, 0));
         } else {
-            model_transform = model_transform.times(Mat4.rotation(90, 0, 1, 0));
+            model_transform = model_transform.times(Mat4.rotation(Math.PI/2.0, 0, 1, 0));
         }
 
         if (!this.game.player.jump) {
