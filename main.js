@@ -22,6 +22,9 @@ export class Main_Scene extends Scene {
             grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
             grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
             cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
+            cube1: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff")}),
+            cube2: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000")}),
+            sphere: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c")}),
             car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
         };
 
@@ -37,6 +40,7 @@ export class Main_Scene extends Scene {
         this.key_triggered_button("Move Left", ["a"], this.move_left);
         this.key_triggered_button("Move Right", ["d"], this.move_right);
         this.key_triggered_button("Restart", ["r"], this.restart_game);
+        //this.key_triggered_button("Change character", ["c"], () =>
     }
 
     move_forward() { // forward callback
@@ -91,6 +95,9 @@ export class Main_Scene extends Scene {
         this.game = new Game();
     }
 
+
+
+
     display(context, program_state) {        
         
         if (!this.setup) {
@@ -128,8 +135,21 @@ export class Main_Scene extends Scene {
         });
     }
 
-    draw_player(context, program_state) { // draw the player character
+    /*draw_player(context, program_state) { // draw the player character something idk
         // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
+
+        let model_transform1 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index))
+            .times(Mat4.scale(.4, .5, .4))
+        let model_transform2 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1.5, this.game.player.index))
+            .times(Mat4.scale(.2, .25, .2))
+        //this.player_transform =
+        this.shapes.cube.draw(context, program_state, model_transform1, this.materials.cube);
+        this.shapes.sphere.draw(context, program_state, model_transform2, this.materials.sphere);
+    }*/
+
+    draw_player(context, program_state) { // draw the player character snowman
+        // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
+
         if (this.game.player.jump_start_time === -1 && this.game.player.jump) {
             this.game.player.jump_start_time = program_state.animation_time/1000;
         }
@@ -158,14 +178,37 @@ export class Main_Scene extends Scene {
                 model_transform = model_transform.times(Mat4.translation(0, offset_vertical/2.0, 0));
             }
         }
-        model_transform = model_transform.times(Mat4.scale(.4, .5, .4));
-        
+
         if (!this.game.player.jump) {
             // Save last stable player_transform
             this.game.player.player_transform = model_transform;
         }
 
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
+        //this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
+
+        let model_transform2 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
+            .times(Mat4.scale(.4, .5, .4))
+        let model_transform3 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 0.5, 0))
+            .times(Mat4.scale(.3, .5, .3))
+        let model_transform4 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1, 0))
+            .times(Mat4.scale(.2, .5, .2))
+
+        let model_transform5 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1.5, 0))
+            .times(Mat4.scale(.4, .05, .4))
+        let model_transform6 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1.75, 0))
+            .times(Mat4.scale(.2, .4, .2))
+        //this.player_transform = model_transform;
+        //let blob = [model_transform1];
+        let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6];
+        for (let i = 0; i < 5; i++) {
+            if (i<3) {
+                this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube1);
+            }
+            else {
+                this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube2);
+            }
+        }
+
     }
 
     draw_cars(context, program_state, dt) { // draw and move the cars per row
