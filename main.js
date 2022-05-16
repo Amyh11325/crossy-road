@@ -45,7 +45,6 @@ export class Main_Scene extends Scene {
 
     move_forward() { // forward callback
         if (!this.game.player.jump) {
-            console.log("forward");
             this.game.player.jump = true;
             this.game.player.forward = [1, 0, 0];
             this.game.player.row_num++;
@@ -58,7 +57,6 @@ export class Main_Scene extends Scene {
 
     move_backward() { // backward callback
         if (!this.game.player.jump) {
-            console.log("backwards");
             this.game.player.jump = true;
             this.game.player.forward = [-1, 0, 0];
             this.game.player.row_num--;
@@ -70,7 +68,6 @@ export class Main_Scene extends Scene {
 
     move_left() { // left callback
         if (!this.game.player.jump) {
-            console.log("left");
             this.game.player.jump = true;
             this.game.player.forward = [0, 0, -1];
             if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
@@ -81,7 +78,6 @@ export class Main_Scene extends Scene {
 
     move_right() { // right callback
         if (!this.game.player.jump) {
-            console.log("right");
             this.game.player.jump = true;
             this.game.player.forward = [0, 0, 1];
             if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
@@ -142,7 +138,6 @@ export class Main_Scene extends Scene {
             .times(Mat4.scale(.4, .5, .4))
         let model_transform2 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1.5, this.game.player.index))
             .times(Mat4.scale(.2, .25, .2))
-        //this.player_transform =
         this.shapes.cube.draw(context, program_state, model_transform1, this.materials.cube);
         this.shapes.sphere.draw(context, program_state, model_transform2, this.materials.sphere);
     }*/
@@ -162,9 +157,9 @@ export class Main_Scene extends Scene {
             model_transform = model_transform.times(
                 // previous position + offset*forward_direction
                 Mat4.translation(
-                    this.game.player.player_transform[0][3] + offset_forward*this.game.player.forward[0], 
+                    this.game.player.transform[0][3] + offset_forward*this.game.player.forward[0], 
                     1, 
-                    this.game.player.player_transform[2][3] + offset_forward*this.game.player.forward[2]));
+                    this.game.player.transform[2][3] + offset_forward*this.game.player.forward[2]));
         } else { // player not jumping
             model_transform = model_transform.times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index));
         }
@@ -180,21 +175,23 @@ export class Main_Scene extends Scene {
         }
 
         // Rotate the player
-        if (this.game.player.forward[0] === 1) {
-            model_transform = model_transform.times(Mat4.rotation(0, 0, 1, 0));
-            this.game.player.player_rotation = 0;
-        } else if (this.game.player.forward[0] === -1) {
-            model_transform = model_transform.times(Mat4.rotation(Math.PI, 0, 1, 0));
-            console.log(model_transform[0]);
-        } else if (this.game.player.forward[2] === 1) {
-            model_transform = model_transform.times(Mat4.rotation(-Math.PI/2.0, 0, 1, 0));
+        if (this.game.player.jump) {
+            let target_rot = this.get_rotation_from_forward(this.game.player.forward);
+            let sign = 1;
+            if (this.game.player.rotation > target_rot) {
+                sign = -1
+            }
+            let current_rot = this.game.player.rotation + sign * offset_forward * Math.abs(this.game.player.rotation - target_rot);
+            model_transform = model_transform.times(Mat4.rotation(current_rot, 0, 1, 0));
         } else {
-            model_transform = model_transform.times(Mat4.rotation(Math.PI/2.0, 0, 1, 0));
+            model_transform = model_transform.times(Mat4.rotation(this.get_rotation_from_forward(this.game.player.forward), 0, 1, 0));
+            this.game.player.rotation = this.get_rotation_from_forward(this.game.player.forward);
+            console.log("rot: " + this.game.player.rotation);
         }
 
         if (!this.game.player.jump) {
-            // Save last stable player_transform
-            this.game.player.player_transform = model_transform;
+            // Save last stable player transform
+            this.game.player.transform = model_transform;
         }
 
         //this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
@@ -215,7 +212,6 @@ export class Main_Scene extends Scene {
             .times(Mat4.scale(.05,.05,.05))
         let model_transform8 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.9, 0))
             .times(Mat4.scale(.05,.05,.05))
-        //this.player_transform = model_transform;
         let blob = [model_transform1];
         let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6,
             model_transform7, model_transform8];
@@ -230,6 +226,18 @@ export class Main_Scene extends Scene {
             }
         }
 
+    }
+
+    get_rotation_from_forward(forward) {
+        if (forward[0] === 1) {
+            return 0;
+        } else if (forward[0] === -1) {
+            return Math.PI;
+        } else if (this.game.player.forward[2] === 1) {
+            return -Math.PI/2.0;
+        } else {
+            return Math.PI/2.0;
+        }
     }
 
     draw_cars(context, program_state, dt) { // draw and move the cars per row
