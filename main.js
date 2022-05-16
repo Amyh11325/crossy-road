@@ -24,6 +24,7 @@ export class Main_Scene extends Scene {
             cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
             cube1: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff")}),
             cube2: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000")}),
+            cube3: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e")}),
             sphere: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c")}),
             car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
         };
@@ -213,20 +214,25 @@ export class Main_Scene extends Scene {
             .times(Mat4.scale(.2, .4, .2))
         let model_transform7 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.4, 0))
             .times(Mat4.scale(.05,.05,.05))
-        let model_transform8 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.9, 0))
-            .times(Mat4.scale(.05,.05,.05))
+        let model_transform8 = Mat4.identity().times(model_transform).times(Mat4.translation(0.3, 0.9, 0))
+            .times(Mat4.scale(.04,.05,.05))
+        let model_transform9 = Mat4.identity().times(model_transform).times(Mat4.translation(0.3, 1.25, 0))
+            .times(Mat4.scale(.2,.05,.05))
         //this.player_transform = model_transform;
         let blob = [model_transform1];
         let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6,
-            model_transform7, model_transform8];
+            model_transform7, model_transform8, model_transform9];
         let character_selection = [snowman, blob];
-        //if character_selection[i] == snowman
-        for (let i = 0; i < 7; i++) {
+        //if (character_selection[k] == snowman)
+        for (let i = 0; i < 8; i++) {
             if (i<3) {
                 this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube1);
             }
-            else {
+            else if (i < 7){
                 this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube2);
+            }
+            else {
+                this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube3);
             }
         }
 
