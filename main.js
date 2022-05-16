@@ -198,7 +198,8 @@ export class Main_Scene extends Scene {
         }
 
         //this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
-
+        let model_transform1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
+            .times(Mat4.scale(.4, .3, .4))
         let model_transform2 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
             .times(Mat4.scale(.4, .5, .4))
         let model_transform3 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 0.5, 0))
@@ -210,10 +211,17 @@ export class Main_Scene extends Scene {
             .times(Mat4.scale(.4, .05, .4))
         let model_transform6 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1.75, 0))
             .times(Mat4.scale(.2, .4, .2))
+        let model_transform7 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.4, 0))
+            .times(Mat4.scale(.05,.05,.05))
+        let model_transform8 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.9, 0))
+            .times(Mat4.scale(.05,.05,.05))
         //this.player_transform = model_transform;
-        //let blob = [model_transform1];
-        let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6];
-        for (let i = 0; i < 5; i++) {
+        let blob = [model_transform1];
+        let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6,
+            model_transform7, model_transform8];
+        let character_selection = [snowman, blob];
+        //if character_selection[i] == snowman
+        for (let i = 0; i < 7; i++) {
             if (i<3) {
                 this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube1);
             }
