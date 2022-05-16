@@ -1,4 +1,4 @@
-import { Field, Row, Tile } from "./field.js"
+import { Field } from "./field.js"
 import { Player } from "./player.js";
 
 export class Game {

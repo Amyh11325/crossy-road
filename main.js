@@ -19,9 +19,10 @@ export class Main_Scene extends Scene {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
             road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#151520")}),
             road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#101015")}),
-            grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#95e06c")}),
+            grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
             grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
-            cube: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: 1, specularity: 1, color: hex_color("#a9fff7")})
+            cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
+            car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
         };
 
         Constants.CAMERA_PERSPECTIVE === "crossy" ?
@@ -70,6 +71,7 @@ export class Main_Scene extends Scene {
     }
 
     restart_game() {
+        this.setup = false;
         this.game = new Game();
     }
 
@@ -81,12 +83,16 @@ export class Main_Scene extends Scene {
             this.setup = true;
         }
 
+        const t = program_state.animation_time / 1000, dt = program_state.animation_delta_time / 1000;
+
         this.draw_field(context, program_state);
         this.draw_player(context, program_state);
+        this.draw_cars(context, program_state, dt);
         this.move_camera(context, program_state);
+        this.move_light(context, program_state);
     }
 
-    camera_setup(context, program_state) {
+    camera_setup(context, program_state) { //initial camera setup
         program_state.set_camera(this.camera_location);
 
         program_state.projection_transform = Mat4.perspective(
@@ -94,15 +100,13 @@ export class Main_Scene extends Scene {
     }
 
     lighting_setup(program_state) {
-        program_state.lights = [new Light(vec4(0, 10, Constants.ROW_WIDTH / 2, 1), color(.973, .957, .89, 1), 1000)];
+        program_state.lights = [new Light(vec4(0, 40, Constants.ROW_WIDTH / 2, 1), color(.973, .957, .89, 1), 10000)];
     }
 
     draw_field(context, program_state) { // draw the field from the current game state
         (this.game.field.rows).forEach(row => {
             (row.row).forEach(tile => {
-                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
-                    .times(Mat4.scale(.5, .5, .5));
-                this.shapes.cube.draw(context, program_state, model_transform, this.get_field_material(tile.type));
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
             });
         });
     }
@@ -115,39 +119,75 @@ export class Main_Scene extends Scene {
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
     }
 
+    draw_cars(context, program_state, dt) { // draw and move the cars per row
+        (this.game.field.rows).forEach(row => {
+            (row.car_array.cars).forEach(car => {
+                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 1, car.position))
+                    .times(Mat4.scale(.4, .5, .8 * (Constants.OBSTACLE_WIDTH / 2)));
+                this.shapes.cube.draw(context, program_state, model_transform, this.materials.car);
+                car.position = (car.position + (dt * row.car_array.direction * row.car_array.speed)) % Constants.ROW_WIDTH;
+                if (car.position < 0) {
+                    car.position = car.position + Constants.ROW_WIDTH;
+                }
+            });
+        });
+    }
+
     move_camera(context, program_state) { // move the camera forward if needed
         if (this.game.player.row_num >= this.game.score) { // only move if we pass the best score
-
             // perform smoothing, modify at your own risk
             let desired_position = this.camera_location.times(Mat4.inverse(Mat4.translation(this.game.score - 1, 0, 0)));
-            desired_position = desired_position.map((x, i) => Vector.from(Mat4.inverse(program_state.camera_transform)[i]).mix(x, .025));
+            desired_position = desired_position.map((x, i) => Vector.from(Mat4.inverse(program_state.camera_transform)[i]).mix(x, Constants.CAMERA_SMOOTHING));
             program_state.set_camera((desired_position));
         }
     }
 
-    increment_score() {
+    move_light(context, program_state) { // move the light source with the player
+        if (this.game.player.row_num >= this.game.score) { // only move if we pass the best score
+            program_state.lights[0].position[0] = this.game.player.row_num;
+        }
+    }
+
+    increment_score() { // increase the game score
         this.game.score++;
         console.log(this.game.score);
     }
 
-    generate_new_row() {
+    generate_new_row() { // create a new row, delete the previous row
         this.game.field.progress();
+    }
+
+    get_field_model_transform(row, tile) { // check what tile is given and find the transform
+        switch(tile.type) {
+            case 0:
+            case 1:
+                return Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
+                .times(Mat4.scale(.5, .5, .5));
+            case 10:
+            case 11:
+                return Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
+                .times(Mat4.scale(.5, .6, .5));
+            default:
+                return Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
+                .times(Mat4.scale(.5, .5, .5));
+        }
     }
 
     get_field_material(material_index) { // check what material corresponds to a given index
         switch(material_index) {
             case 0:
                 return this.materials.road;
-            case 1:
+            case 10:
                 return this.materials.grass;
-            case 2:
+            case 1:
                 return this.materials.road_bound;
-            case 3:
+            case 11:
                 return this.materials.grass_bound;
             default:
                 return this.materials.generic;
         }
     }
+
 }
 
 class Gouraud_Shader extends Shader {
