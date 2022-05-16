@@ -44,33 +44,49 @@ export class Main_Scene extends Scene {
     }
 
     move_forward() { // forward callback
-        console.log("forward");
-        this.game.player.row_num++;
-        if (this.game.score < this.game.player.row_num) { // moving past the best score
-            this.increment_score();
-            this.generate_new_row();
-        }
+        if (!this.game.player.jump) {
+            console.log("forward");
+            this.game.player.jump = true;
+            this.game.player.forward = [1, 0, 0];
+            this.game.player.row_num++;
+            if (this.game.score < this.game.player.row_num) { // moving past the best score
+                this.increment_score();
+                this.generate_new_row();
+            }
+        }   
     }
 
     move_backward() { // backward callback
-        console.log("backwards");
-        this.game.player.row_num--;
-        if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
-            this.restart_game();
+        if (!this.game.player.jump) {
+            console.log("backwards");
+            this.game.player.jump = true;
+            this.game.player.forward = [-1, 0, 0];
+            this.game.player.row_num--;
+            if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
+                this.restart_game();
+            }
         }
     }
 
     move_left() { // left callback
-        console.log("left");
-        if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
-            this.game.player.index--;
+        if (!this.game.player.jump) {
+            console.log("left");
+            this.game.player.jump = true;
+            this.game.player.forward = [0, 0, -1];
+            if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+                this.game.player.index--;
+            }
         }
     }
 
     move_right() { // right callback
-        console.log("right");
-        if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
-            this.game.player.index++;
+        if (!this.game.player.jump) {
+            console.log("right");
+            this.game.player.jump = true;
+            this.game.player.forward = [0, 0, 1];
+            if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+                this.game.player.index++;
+            }
         }
     }
 
@@ -95,6 +111,7 @@ export class Main_Scene extends Scene {
         this.draw_field(context, program_state);
         this.draw_player(context, program_state);
         this.draw_cars(context, program_state, dt);
+        this.check_collisions();
         this.move_camera(context, program_state);
         this.move_light(context, program_state);
     }
@@ -120,6 +137,7 @@ export class Main_Scene extends Scene {
 
     /*draw_player(context, program_state) { // draw the player character something idk
         // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
+
         let model_transform1 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index))
             .times(Mat4.scale(.4, .5, .4))
         let model_transform2 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1.5, this.game.player.index))
@@ -131,20 +149,56 @@ export class Main_Scene extends Scene {
 
     draw_player(context, program_state) { // draw the player character snowman
         // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
-        let model_transform1 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index))
+
+        if (this.game.player.jump_start_time === -1 && this.game.player.jump) {
+            this.game.player.jump_start_time = program_state.animation_time/1000;
+        }
+        // player's jump offsets
+        let offset_vertical = Math.sin(2*Math.PI*(program_state.animation_time/1000 - this.game.player.jump_start_time)/Constants.JUMP_TIME);
+        let offset_forward = Math.sin(Math.PI*(program_state.animation_time/1000 - this.game.player.jump_start_time)/Constants.JUMP_TIME);
+
+        let model_transform = Mat4.identity();
+        if (this.game.player.jump) {
+            model_transform = model_transform.times(
+                // previous position + offset*forward_direction
+                Mat4.translation(
+                    this.game.player.player_transform[0][3] + offset_forward*this.game.player.forward[0], 
+                    1, 
+                    this.game.player.player_transform[2][3] + offset_forward*this.game.player.forward[2]));
+        } else { // player not jumping
+            model_transform = model_transform.times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index));
+        }
+
+        // Translate player vertically for jumping & reset jump variables
+        if (this.game.player.jump) {
+            if (offset_vertical < 0) {
+                this.game.player.jump = false;
+                this.game.player.jump_start_time = -1;
+            } else {
+                model_transform = model_transform.times(Mat4.translation(0, offset_vertical/2.0, 0));
+            }
+        }
+
+        if (!this.game.player.jump) {
+            // Save last stable player_transform
+            this.game.player.player_transform = model_transform;
+        }
+
+        //this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
+
+        let model_transform2 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
             .times(Mat4.scale(.4, .5, .4))
-        let model_transform2 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index))
-            .times(Mat4.scale(.4, .5, .4))
-        let model_transform3 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1.5, this.game.player.index))
+        let model_transform3 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 0.5, 0))
             .times(Mat4.scale(.3, .5, .3))
-        let model_transform4 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 2, this.game.player.index))
+        let model_transform4 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1, 0))
             .times(Mat4.scale(.2, .5, .2))
-        let model_transform5 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 2.5, this.game.player.index))
+
+        let model_transform5 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1.5, 0))
             .times(Mat4.scale(.4, .05, .4))
-        let model_transform6 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 2.75, this.game.player.index))
+        let model_transform6 = Mat4.identity().times(model_transform).times(Mat4.translation(0, 1.75, 0))
             .times(Mat4.scale(.2, .4, .2))
         //this.player_transform = model_transform;
-        let blob = [model_transform1];
+        //let blob = [model_transform1];
         let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6];
         for (let i = 0; i < 5; i++) {
             if (i<3) {
@@ -154,6 +208,7 @@ export class Main_Scene extends Scene {
                 this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube2);
             }
         }
+
     }
 
     draw_cars(context, program_state, dt) { // draw and move the cars per row
@@ -168,6 +223,28 @@ export class Main_Scene extends Scene {
                 }
             });
         });
+    }
+
+    check_collisions() {
+        let current_row = this.game.player.row_num;
+        (this.game.field.rows).forEach(row => {
+            if (row.row_num == current_row) {
+                let left_player_hitbox = this.game.player.index - .5 + Constants.COLLISION_LEEWAY;
+                let right_player_hitbox = this.game.player.index + .5 - Constants.COLLISION_LEEWAY;
+                (row.car_array.cars).forEach(car => {
+                    let left_car_hitbox = car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.COLLISION_LEEWAY;
+                    let right_car_hitbox = car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.COLLISION_LEEWAY;
+                    if (row.car_array.direction == -1 && (left_car_hitbox < right_player_hitbox && right_car_hitbox > left_player_hitbox)) {
+                        console.log("Too Bad");
+                        this.restart_game();
+                    }
+                    else if (row.car_array.direction == 1 && (right_car_hitbox > left_player_hitbox && left_car_hitbox < right_player_hitbox)) {
+                        console.log("Too Bad");
+                        this.restart_game();
+                    }
+                })
+            }
+        })
     }
 
     move_camera(context, program_state) { // move the camera forward if needed
