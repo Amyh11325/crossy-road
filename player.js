@@ -8,5 +8,6 @@ export class Player {
         this.jump = false;
         this.jump_start_time = -1;
         this.player_transform = [0, 0, this.index];
+        this.player_rotation = 0;
     }
 }
