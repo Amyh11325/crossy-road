@@ -17,12 +17,13 @@ export class Main_Scene extends Scene {
 
         this.materials = {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
-            road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#151520")}),
-            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#101015")}),
+            road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#555560")}),
+            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#454555")}),
             grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
             grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
             cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
             car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
+            tire: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
         };
 
         Constants.CAMERA_PERSPECTIVE === "crossy" ?
@@ -123,9 +124,24 @@ export class Main_Scene extends Scene {
     draw_cars(context, program_state, dt) { // draw and move the cars per row
         (this.game.field.rows).forEach(row => {
             (row.car_array.cars).forEach(car => {
-                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 1, car.position))
-                    .times(Mat4.scale(.4, .5, .8 * (Constants.OBSTACLE_WIDTH / 2)));
-                this.shapes.cube.draw(context, program_state, model_transform, this.materials.car);
+                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 1 - .2, car.position))
+                    .times(Mat4.scale(.35, .2, .8 * (Constants.OBSTACLE_WIDTH / 2)));
+                let model_transform2 = Mat4.identity().times(Mat4.translation(row.row_num, 1 + .15, car.position))
+                    .times(Mat4.scale(.35, .15, .8 * (Constants.OBSTACLE_WIDTH / 2) * .65));
+                let model_transform3 = Mat4.identity().times(Mat4.translation(row.row_num - .3, .5 + .2, car.position + Constants.OBSTACLE_WIDTH / 2 - .6))
+                    .times(Mat4.scale(.1, .15, .15));
+                let model_transform4 = Mat4.identity().times(Mat4.translation(row.row_num - .3, .5 + .2, car.position - Constants.OBSTACLE_WIDTH / 2 + .6))
+                    .times(Mat4.scale(.1, .15, .15));
+                let model_transform5 = Mat4.identity().times(Mat4.translation(row.row_num + .3, .5 + .2, car.position + Constants.OBSTACLE_WIDTH / 2 - .6))
+                    .times(Mat4.scale(.1, .15, .15));
+                let model_transform6 = Mat4.identity().times(Mat4.translation(row.row_num + .3, .5 + .2, car.position - Constants.OBSTACLE_WIDTH / 2 + .6))
+                    .times(Mat4.scale(.1, .15, .15));
+                this.shapes.cube.draw(context, program_state, model_transform, this.materials.car.override({color: hex_color(car.color)}));
+                this.shapes.cube.draw(context, program_state, model_transform2, this.materials.car.override({color: hex_color(car.color)}));
+                this.shapes.cube.draw(context, program_state, model_transform3, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform4, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform5, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform6, this.materials.tire);
                 car.position = (car.position + (dt * row.car_array.direction * row.car_array.speed)) % Constants.ROW_WIDTH;
                 if (car.position < 0) {
                     car.position = car.position + Constants.ROW_WIDTH;
