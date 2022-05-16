@@ -13,7 +13,7 @@ export const OBSTACLE_WIDTH = 2; // the length of an obstacle on the road
 export const MIN_OBSTACLE_SPACING = 3; // the minimum distance between obstacles
 export const MIN_OBSTACLE_SPEED = .6; // the minimum speed of an obstacle
 export const MAX_OBSTACLE_SPEED = 1.8; // the minimum speed of an obstacle
-
+export const COLLISION_LEEWAY = .2; // amount of leeway allowed before a collision is registered
 
 export const CAMERA_PERSPECTIVE = "crossy" // "crossy": diagonal camera, "flat": straight down view
 export const CAMERA_SMOOTHING = .025; // smoothing for camera movement, smaller means more smoothing

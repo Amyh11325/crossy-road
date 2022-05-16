@@ -88,6 +88,7 @@ export class Main_Scene extends Scene {
         this.draw_field(context, program_state);
         this.draw_player(context, program_state);
         this.draw_cars(context, program_state, dt);
+        this.check_collisions();
         this.move_camera(context, program_state);
         this.move_light(context, program_state);
     }
@@ -131,6 +132,28 @@ export class Main_Scene extends Scene {
                 }
             });
         });
+    }
+
+    check_collisions() {
+        let current_row = this.game.player.row_num;
+        (this.game.field.rows).forEach(row => {
+            if (row.row_num == current_row) {
+                let left_player_hitbox = this.game.player.index - .5 + Constants.COLLISION_LEEWAY;
+                let right_player_hitbox = this.game.player.index + .5 - Constants.COLLISION_LEEWAY;
+                (row.car_array.cars).forEach(car => {
+                    let left_car_hitbox = car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.COLLISION_LEEWAY;
+                    let right_car_hitbox = car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.COLLISION_LEEWAY;
+                    if (row.car_array.direction == -1 && (left_car_hitbox < right_player_hitbox && right_car_hitbox > left_player_hitbox)) {
+                        console.log("Too Bad");
+                        this.restart_game();
+                    }
+                    else if (row.car_array.direction == 1 && (right_car_hitbox > left_player_hitbox && left_car_hitbox < right_player_hitbox)) {
+                        console.log("Too Bad");
+                        this.restart_game();
+                    }
+                })
+            }
+        })
     }
 
     move_camera(context, program_state) { // move the camera forward if needed
