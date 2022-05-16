@@ -17,3 +17,5 @@ export const MAX_OBSTACLE_SPEED = 1.8; // the minimum speed of an obstacle
 
 export const CAMERA_PERSPECTIVE = "crossy" // "crossy": diagonal camera, "flat": straight down view
 export const CAMERA_SMOOTHING = .025; // smoothing for camera movement, smaller means more smoothing
+
+export const JUMP_TIME = 0.4;
