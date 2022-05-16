@@ -7,6 +7,6 @@ export class Player {
         this.forward = [1, 0, 0];
         this.jump = false;
         this.jump_start_time = -1;
-        this.player_transform = undefined;
+        this.player_transform = [0, 0, this.index];
     }
 }
