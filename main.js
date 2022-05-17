@@ -68,20 +68,20 @@ export class Main_Scene extends Scene {
 
     move_left() { // left callback
         if (!this.game.player.jump) {
-            this.game.player.jump = true;
             this.game.player.forward = [0, 0, -1];
             if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
                 this.game.player.index--;
+                this.game.player.jump = true;
             }
         }
     }
 
     move_right() { // right callback
         if (!this.game.player.jump) {
-            this.game.player.jump = true;
             this.game.player.forward = [0, 0, 1];
             if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
                 this.game.player.index++;
+                this.game.player.jump = true;
             }
         }
     }
@@ -131,17 +131,6 @@ export class Main_Scene extends Scene {
         });
     }
 
-    /*draw_player(context, program_state) { // draw the player character something idk
-        // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
-
-        let model_transform1 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1, this.game.player.index))
-            .times(Mat4.scale(.4, .5, .4))
-        let model_transform2 = Mat4.identity().times(Mat4.translation(this.game.player.row_num, 1.5, this.game.player.index))
-            .times(Mat4.scale(.2, .25, .2))
-        this.shapes.cube.draw(context, program_state, model_transform1, this.materials.cube);
-        this.shapes.sphere.draw(context, program_state, model_transform2, this.materials.sphere);
-    }*/
-
     draw_player(context, program_state) { // draw the player character snowman
         // TODO: make the player more interesting than a cube (maybe a sphere? WOW so creative)
 
@@ -177,16 +166,24 @@ export class Main_Scene extends Scene {
         // Rotate the player
         if (this.game.player.jump) {
             let target_rot = this.get_rotation_from_forward(this.game.player.forward);
-            let sign = 1;
-            if (this.game.player.rotation > target_rot) {
-                sign = -1
+            // Adjust rotation values to ensure player rotates the shortest distance
+            if (Math.abs(this.game.player.rotation - target_rot) > Math.abs(this.game.player.rotation - target_rot + Math.PI*2.0)) {
+                this.game.player.rotation += Math.PI*2.0;
+            } else if (Math.abs(target_rot - this.game.player.rotation) > Math.abs(target_rot - this.game.player.rotation + 2.0*Math.PI)) {
+                this.game.player.rotation -= Math.PI*2.0
             }
+
+            let sign = 1;   // counter-clockwise rotation
+            if (this.game.player.rotation - target_rot > target_rot - this.game.player.rotation) {
+                sign = -1;  // clockwise rotation
+            }
+            // previous rotation + sign_direction*offset_scale*difference
             let current_rot = this.game.player.rotation + sign * offset_forward * Math.abs(this.game.player.rotation - target_rot);
             model_transform = model_transform.times(Mat4.rotation(current_rot, 0, 1, 0));
         } else {
             model_transform = model_transform.times(Mat4.rotation(this.get_rotation_from_forward(this.game.player.forward), 0, 1, 0));
+            // Save last stable player rotation
             this.game.player.rotation = this.get_rotation_from_forward(this.game.player.forward);
-            console.log("rot: " + this.game.player.rotation);
         }
 
         if (!this.game.player.jump) {
