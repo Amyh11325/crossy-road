@@ -73,9 +73,9 @@ export class Main_Scene extends Scene {
     move_left() { // left callback
         if (!this.game.player.jump) {
             console.log("left");
-            this.game.player.jump = true;
-            this.game.player.forward = [0, 0, -1];
             if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+                this.game.player.jump = true;
+                this.game.player.forward = [0, 0, -1];
                 this.game.player.index--;
             }
         }
@@ -84,9 +84,9 @@ export class Main_Scene extends Scene {
     move_right() { // right callback
         if (!this.game.player.jump) {
             console.log("right");
-            this.game.player.jump = true;
-            this.game.player.forward = [0, 0, 1];
             if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+                this.game.player.jump = true;
+                this.game.player.forward = [0, 0, 1];
                 this.game.player.index++;
             }
         }
@@ -96,9 +96,6 @@ export class Main_Scene extends Scene {
         this.setup = false;
         this.game = new Game();
     }
-
-
-
 
     display(context, program_state) {        
         
