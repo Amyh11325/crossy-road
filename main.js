@@ -17,8 +17,8 @@ export class Main_Scene extends Scene {
 
         this.materials = {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
-            road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#151520")}),
-            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#101015")}),
+            road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#555560")}),
+            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#454555")}),
             grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
             grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
             cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
@@ -27,6 +27,7 @@ export class Main_Scene extends Scene {
             cube3: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e")}),
             sphere: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c")}),
             car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
+            tire: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
         };
 
         Constants.CAMERA_PERSPECTIVE === "crossy" ?
@@ -241,9 +242,24 @@ export class Main_Scene extends Scene {
     draw_cars(context, program_state, dt) { // draw and move the cars per row
         (this.game.field.rows).forEach(row => {
             (row.car_array.cars).forEach(car => {
-                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 1, car.position))
-                    .times(Mat4.scale(.4, .5, .8 * (Constants.OBSTACLE_WIDTH / 2)));
-                this.shapes.cube.draw(context, program_state, model_transform, this.materials.car);
+                let model_transform_car_body = Mat4.identity().times(Mat4.translation(row.row_num, 1 - .2, car.position))
+                    .times(Mat4.scale(Constants.CAR_BODY_WIDTH, Constants.CAR_BODY_HEIGHT, .8 * (Constants.OBSTACLE_WIDTH / 2)));
+                let model_transform_car_top = Mat4.identity().times(Mat4.translation(row.row_num, 1 + .15, car.position))
+                    .times(Mat4.scale(Constants.CAR_BODY_WIDTH, Constants.CAR_TOP_HEIGHT, .8 * (Constants.OBSTACLE_WIDTH / 2) * .65));
+                let model_transform_wheel1 = Mat4.identity().times(Mat4.translation(row.row_num - Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                let model_transform_wheel2 = Mat4.identity().times(Mat4.translation(row.row_num - Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                let model_transform_wheel3 = Mat4.identity().times(Mat4.translation(row.row_num + Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                let model_transform_wheel4 = Mat4.identity().times(Mat4.translation(row.row_num + Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                this.shapes.cube.draw(context, program_state, model_transform_car_body, this.materials.car.override({color: hex_color(car.color)}));
+                this.shapes.cube.draw(context, program_state, model_transform_car_top, this.materials.car.override({color: hex_color(car.color)}));
+                this.shapes.cube.draw(context, program_state, model_transform_wheel1, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel2, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel3, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel4, this.materials.tire);
                 car.position = (car.position + (dt * row.car_array.direction * row.car_array.speed)) % Constants.ROW_WIDTH;
                 if (car.position < 0) {
                     car.position = car.position + Constants.ROW_WIDTH;

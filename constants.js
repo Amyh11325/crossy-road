@@ -15,6 +15,14 @@ export const MIN_OBSTACLE_SPEED = .6; // the minimum speed of an obstacle
 export const MAX_OBSTACLE_SPEED = 1.8; // the minimum speed of an obstacle
 export const COLLISION_LEEWAY = .2; // amount of leeway allowed before a collision is registered
 
+export const CAR_COLORS = ["#FFFFFF", "#72B01D", "#EB4397", "#60B2E5", "#EE9866", "#FCD581", "#81889A", "#FF6663", "#4F86C6", "#F08A4B"];
+export const CAR_BODY_WIDTH = .35; // the width of the car
+export const CAR_BODY_HEIGHT = .2; // the height of the car's body
+export const CAR_TOP_HEIGHT = .15; // the height of the car's top
+export const WHEEL_DIAMETER = .15; // the diameter of the wheel
+export const WHEEL_WIDTH = .1; // the width of a wheel
+export const WHEEL_OFFSET = .6; // the distance the wheel is from the front/back of the car
+
 export const CAMERA_PERSPECTIVE = "crossy" // "crossy": diagonal camera, "flat": straight down view
 export const CAMERA_SMOOTHING = .025; // smoothing for camera movement, smaller means more smoothing
 

@@ -139,6 +139,7 @@ export class Cars {
 export class Car {
     constructor(position) {
         this.position = position;
+        this.color = Constants.CAR_COLORS[Math.floor(Math.random() * Constants.CAR_COLORS.length)];
     }
 }
 
