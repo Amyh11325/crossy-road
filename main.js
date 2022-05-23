@@ -20,8 +20,11 @@ export class Main_Scene extends Scene {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
             road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#555560")}),
             road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#454555")}),
-            grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
-            grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
+            grass: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
+            grass_bound: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
+            tree_trunk: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#653E04")}),
+            tree_leaves: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#459D2C")}),
+            rock: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#828B90")}),
 
             cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
             cube1: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff")}),
@@ -54,36 +57,40 @@ export class Main_Scene extends Scene {
     }
 
     move_forward() { // forward callback
-        if (!this.game.player.jump) {
-            console.log("forward");
-            this.game.player.jump = true;
+        if (!this.game.player.jump ) {
             this.game.player.forward = [1, 0, 0];
-            this.game.player.row_num++;
-            if (this.game.score < this.game.player.row_num) { // moving past the best score
-                this.increment_score();
-                this.generate_new_row();
-            }
-        }   
+            if (this.check_movable("forward")) {
+                console.log("forward");
+                this.game.player.jump = true;
+                this.game.player.row_num++;
+                if (this.game.score < this.game.player.row_num) { // moving past the best score
+                    this.increment_score();
+                    this.generate_new_row();
+                }
+            }   
+        }
     }
 
     move_backward() { // backward callback
         if (!this.game.player.jump) {
-            console.log("backwards");
-            this.game.player.jump = true;
             this.game.player.forward = [-1, 0, 0];
-            this.game.player.row_num--;
-            if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
-                this.restart_game();
+            if (this.check_movable("backward")) {
+                console.log("backwards");
+                this.game.player.jump = true;
+                this.game.player.row_num--;
+                if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
+                    this.restart_game();
+                }
             }
         }
     }
 
     move_left() { // left callback
         if (!this.game.player.jump) {
-            console.log("left");
-            if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            this.game.player.forward = [0, 0, -1];
+            if (this.check_movable("left")) {
+                console.log("left");
                 this.game.player.jump = true;
-                this.game.player.forward = [0, 0, -1];
                 this.game.player.index--;
             }
         }
@@ -91,10 +98,10 @@ export class Main_Scene extends Scene {
 
     move_right() { // right callback
         if (!this.game.player.jump) {
-            console.log("right");
-            if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            this.game.player.forward = [0, 0, 1];
+            if (this.check_movable("right")) {
+                console.log("right");
                 this.game.player.jump = true;
-                this.game.player.forward = [0, 0, 1];
                 this.game.player.index++;
             }
         }
@@ -142,9 +149,39 @@ export class Main_Scene extends Scene {
     draw_field(context, program_state) { // draw the field from the current game state
         (this.game.field.rows).forEach(row => {
             (row.row).forEach(tile => {
-                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                this.draw_tile(context, program_state, row, tile);
+                //this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
             });
         });
+    }
+
+    draw_tile(context, program_state, row, tile) {
+        switch(tile.type) {
+            case 0:
+            case 1:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                break;
+            case 10:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                break;
+            case 11:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                if (tile.seed / Constants.MAX_SEED < Constants.TREE_BOUND_PERCENT) {
+                    this.draw_tree(context, program_state, row, tile);
+                }
+                break;
+            case 12:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                this.draw_tree(context, program_state, row, tile);
+                break;
+            case 13:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                this.draw_rock(context, program_state, row, tile);
+                break;
+            default:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                break;
+        }
     }
 
     draw_player(context, program_state) { // draw the player character snowman
@@ -324,6 +361,22 @@ export class Main_Scene extends Scene {
         });
     }
 
+    draw_tree(context, program_state, row, tile) {
+        let model_transform_trunk = Mat4.identity().times(Mat4.translation(row.row_num, 1, tile.index))
+            .times(Mat4.scale(Constants.TREE_TRUNK_WIDTH, .4, Constants.TREE_TRUNK_WIDTH));
+        this.shapes.cube.draw(context, program_state, model_transform_trunk, this.materials.tree_trunk);
+        let model_transform_leaves = Mat4.identity().times(Mat4.translation(row.row_num, Constants.TREE_LEAVES_BASE_HEIGHT, tile.index))
+            .times(Mat4.scale(Constants.TREE_LEAVES_WIDTH, .4 + tile.seed / Constants.MAX_SEED * Constants.TREE_HEIGHT_MULTIPLIER, Constants.TREE_LEAVES_WIDTH))
+            .times(Mat4.translation(0, 1, 0));
+        this.shapes.cube.draw(context, program_state, model_transform_leaves, this.materials.tree_leaves);
+    }
+
+    draw_rock(context, program_state, row, tile) {
+        let model_transform_rock = Mat4.identity().times(Mat4.translation(row.row_num, .8, tile.index))
+            .times(Mat4.scale(Constants.ROCK_WIDTH, Constants.ROCK_HEIGHT, Constants.ROCK_WIDTH));
+        this.shapes.cube.draw(context, program_state, model_transform_rock, this.materials.rock);
+    }
+
     check_collisions() {
         let current_row = this.game.player.row_num;
         (this.game.field.rows).forEach(row => {
@@ -344,6 +397,34 @@ export class Main_Scene extends Scene {
                 })
             }
         })
+    }
+
+    check_movable(direction) {
+        let current_row_num = this.game.player.row_num;
+        let current_row = this.game.field.rows.find(x => x.row_num == current_row_num).row;
+        let current_index = this.game.player.index
+        switch(direction) {
+            case "forward":
+                let forward_row = this.game.field.rows.find(x => x.row_num == current_row_num + 1).row;
+                let forward_tile = forward_row.find(x => x.index == current_index);
+                return this.check_movable_type(forward_tile.type);
+            case "backward":
+                let backward_row = this.game.field.rows.find(x => x.row_num == current_row_num - 1).row;
+                let backward_tile = backward_row.find(x => x.index == current_index);
+                return this.check_movable_type(backward_tile.type);
+            case "left":
+                let left_tile = current_row.find(x => x.index == current_index - 1);
+                return this.check_movable_type(left_tile.type);
+            case "right":
+                let right_tile = current_row.find(x => x.index == current_index + 1);
+                return this.check_movable_type(right_tile.type);
+            default:
+                return false;
+        }
+    }
+
+    check_movable_type(type) {
+        return !((type > 10 && type < 20) || type == 1)
     }
 
     move_camera(context, program_state) { // move the camera forward if needed
@@ -378,6 +459,8 @@ export class Main_Scene extends Scene {
                 .times(Mat4.scale(.5, .5, .5));
             case 10:
             case 11:
+            case 12:
+            case 13:
                 return Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
                 .times(Mat4.scale(.5, .6, .5));
             default:
@@ -391,6 +474,8 @@ export class Main_Scene extends Scene {
             case 0:
                 return this.materials.road;
             case 10:
+            case 12:
+            case 13:
                 return this.materials.grass;
             case 1:
                 return this.materials.road_bound;

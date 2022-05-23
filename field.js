@@ -23,6 +23,7 @@ export class Field {
 export class Row {
     constructor(row_num) {
         this.row_num = row_num;
+        this.seed = Math.floor(Math.random() * Constants.MAX_SEED);
         this.row = Array(Constants.ROW_WIDTH);
         this.row_type = this.get_row_type();
         this.populate_row();
@@ -34,6 +35,32 @@ export class Row {
         for (let index = 0; index < this.row.length; index++) {
             this.row[index] = new Tile(index, this.row_num, this.row_type);
         }
+        if (this.row_type == 1 && this.row_num > 0) { // spawn in trees and rocks in bounds
+            let number_of_blockers = this.get_number_of_blockers(this.seed);
+            let indexes = Array.apply(null, Array(Constants.PLAYABLE_WIDTH)).map(function (x, index) { return index; })
+            let shuffled_indexes = this.shuffle(indexes);
+            let blocker_in_bound_locations = shuffled_indexes.slice(0, number_of_blockers);
+            blocker_in_bound_locations.forEach(index => {
+                this.row[index + Math.ceil(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2)].type = Math.floor(Math.random() * 2 + 12);
+            });
+        }
+    }
+
+    // Fisher-Yates shuffle
+    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    get_number_of_blockers(seed) { // using equation floor((seed)^n / (max seed)^n * floor((playable width - 1) / m)), should always be possible
+        return Math.floor(Math.pow(seed, Constants.BLOCKER_SPAWN_ALGORITHM_STEEPNESS) / Math.pow(Constants.MAX_SEED, Constants.BLOCKER_SPAWN_ALGORITHM_STEEPNESS) * Math.floor((Constants.PLAYABLE_WIDTH - 1) * Constants.BLOCKER_MAX_ROW_PERCENTAGE));
     }
 
     get_row_type() {
@@ -148,6 +175,7 @@ export class Tile {
         this.index = index;
         this.row_num = row_num;
         this.type = this.get_tile_type(index, row_type);
+        this.seed = Math.floor(Math.random() * Constants.MAX_SEED);
     }
 
     get_tile_type(index, row_type) {
@@ -155,6 +183,8 @@ export class Tile {
         // 1: road bound
         // 10: grass
         // 11: grass bound
+        // 12: tree
+        // 13: rock
         if (index < Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1|| index > Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
             if (row_type == 0) {
                 return 1;
