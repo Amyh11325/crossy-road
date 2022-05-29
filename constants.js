@@ -34,6 +34,24 @@ export const BLOCKER_SPAWN_ALGORITHM_STEEPNESS = 3; // the higher the number, th
 export const BLOCKER_MAX_ROW_PERCENTAGE = .5; // the maximum possible percentage of tiles in a row that are occupied by blockers
 
 export const CAR_COLORS = ["#FFFFFF", "#72B01D", "#EB4397", "#60B2E5", "#EE9866", "#FCD581", "#81889A", "#FF6663", "#4F86C6", "#F08A4B"];
+export const CAR_PALETTES = [
+    ["#AF2BBF","#A14EBF","#6C91BF","#5FB0B7","#5BC8AF"], // orchid to teal
+    ["#DDD78D","#DCBF85","#8B635C","#60594D","#93A29B"], // yellow, brown, gray
+    ["#181F1C","#274029","#315C2B","#60712F","#9EA93F"], // dark green to olive
+    ["#D3F8E2","#E4C1F9","#F694C1","#EDE7B1","#A9DEF9"], // pastels
+    ["#98C1D9","#6969B3","#533A7B","#4B244A","#25171A"], // light blue, purple, raisin
+    ["#E0E2DB","#D2D4C8","#B8BDB5","#889696","#5F7470"], // alabaster to gray
+    ["#DB5461","#686963","#8AA29E","#3D5467","#F1EDEE"], // soft reds and blues
+    ["#7B4B94","#7D82B8","#B7E3CC","#C4FFB2","#D6F7A3"], // purple to lime
+    ["#F7D1CD","#E8C2CA","#D1B3C4","#B392AC","#735D78"], // peach to lavender
+    ["#FABC3C","#FFB238","#F19143","#FF773D","#F55536"], // fire
+    ["#114B5F","#456990","#E4FDE1","#F45B69","#6B2737"], // navy, tan, wine
+    ["#FFA69E","#FAF3DD","#B8F2E6","#AED9E0","#5E6472"], // salmon to gray
+    ["#BBE5ED","#BFBCCB","#B399A2","#986C6A","#784F41"], // copper
+    ["#84DCC6","#A5FFD6","#FFFFFF","#FFA69E","#FF686B"], // watermelon
+    ["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"], // all white
+    //["#","#","#","#","#"],
+]
 export const CAR_BODY_WIDTH = .35; // the width of the car
 export const CAR_BODY_HEIGHT = .2; // the height of the car's body
 export const CAR_TOP_HEIGHT = .15; // the height of the car's top

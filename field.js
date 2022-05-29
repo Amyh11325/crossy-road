@@ -1,34 +1,35 @@
 import * as Constants from "./constants.js"
 
 export class Field {
-    constructor() {
+    constructor(palette) {
         this.rows = Array(Constants.ROWS_AHEAD + Constants.ROWS_BEHIND);
+        this.palette = palette
         this.populate_field();
     }
 
     populate_field() {
         let starting_row_number = 0 - Constants.ROWS_BEHIND; // we need to keep track of a few rows behind us so we can move back
         for (let row_num = starting_row_number; row_num < Constants.ROWS_AHEAD; row_num++) {
-            this.rows[row_num + Constants.ROWS_BEHIND] = new Row(row_num);
+            this.rows[row_num + Constants.ROWS_BEHIND] = new Row(row_num, this.palette);
         }
     }
     
     progress() {
         this.rows.shift();
         let max_row_number = this.rows.at(-1).row_num;
-        this.rows.push(new Row(max_row_number + 1));
+        this.rows.push(new Row(max_row_number + 1, this.palette));
     }
 }
 
 export class Row {
-    constructor(row_num) {
+    constructor(row_num, palette) {
         this.row_num = row_num;
         this.seed = Math.floor(Math.random() * Constants.MAX_SEED);
         this.row = Array(Constants.ROW_WIDTH);
         this.row_type = this.get_row_type();
         this.populate_row();
 
-        this.car_array = new Cars(row_num, this.row_type);
+        this.car_array = new Cars(row_num, this.row_type, palette);
     }
 
     populate_row() {
@@ -86,7 +87,7 @@ export class Cars {
     // each road contains a random number of cars and each row has its own speed and direction
     // cars are randomly generated so that each car is at a certain distance apart from another
     // when a car reaches the end of the screen, it loops back to the beginning using the % operator
-    constructor(row_num, row_type) {
+    constructor(row_num, row_type, palette) {
         this.row_num = row_num
         this.cars = [];
         this.speed = this.get_speed();
@@ -94,17 +95,17 @@ export class Cars {
         if (row_type == 0) {
            this.max_cars_per_row = this.get_max_cars_per_row(); 
         }
-        this.populate_cars();
+        this.populate_cars(palette);
     }
 
-    populate_cars() { // randomize the space between cars instead of the location of the car itself
+    populate_cars(palette) { // randomize the space between cars instead of the location of the car itself
         let cars_in_row = Math.floor(Math.random() * this.max_cars_per_row) + 1; // generate a random number of cars per row
         let distances_between_cars = this.get_random_spacing(cars_in_row);
         let car_base_locations = this.get_car_locations(cars_in_row, distances_between_cars);
         let random_car_locations = this.get_random_car_locations(car_base_locations);
 
         for (let location_index = 0; location_index < random_car_locations.length; location_index++) {
-            this.cars.push(new Car(random_car_locations[location_index]));
+            this.cars.push(new Car(random_car_locations[location_index], palette));
         }
     }
 
@@ -164,9 +165,11 @@ export class Cars {
 }
 
 export class Car {
-    constructor(position) {
+    constructor(position, palette) {
         this.position = position;
-        this.color = Constants.CAR_COLORS[Math.floor(Math.random() * Constants.CAR_COLORS.length)];
+        if (palette) {
+            this.color = palette[Math.floor(Math.random() * palette.length)];
+        }
     }
 }
 
