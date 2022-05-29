@@ -117,8 +117,9 @@ export class Main_Scene extends Scene {
         this.character = Constants.CHARACTERS[(character_index + 1) % Constants.CHARACTERS.length];
     }
 
-    display(context, program_state) {        
-        
+    display(context, program_state) {
+        this.pass_score_to_dom();
+
         if (!this.setup) {
             this.camera_setup(context, program_state);
             this.lighting_setup(program_state);
@@ -133,6 +134,13 @@ export class Main_Scene extends Scene {
         this.check_collisions();
         this.move_camera(context, program_state);
         this.move_light(context, program_state);
+    }
+
+    pass_score_to_dom() {
+        let score_value = document.querySelector("#score");
+        if (score_value) {
+            score_value.innerHTML = this.game.score;
+        }
     }
 
     camera_setup(context, program_state) { //initial camera setup
