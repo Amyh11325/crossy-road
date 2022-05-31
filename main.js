@@ -60,7 +60,7 @@ export class Main_Scene extends Scene {
     }
 
     move_forward() { // forward callback
-        if (!this.game.player.jump ) {
+        if (!this.game.player.jump && !this.game.player.gameover) {
             this.game.player.forward = [1, 0, 0];
             if (this.check_movable("forward")) {
                 console.log("forward");
@@ -75,21 +75,21 @@ export class Main_Scene extends Scene {
     }
 
     move_backward() { // backward callback
-        if (!this.game.player.jump) {
+        if (!this.game.player.jump && !this.game.player.gameover) {
             this.game.player.forward = [-1, 0, 0];
             if (this.check_movable("backward")) {
                 console.log("backwards");
                 this.game.player.jump = true;
                 this.game.player.row_num--;
                 if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
-                    this.restart_game();
+                    this.set_gameover();
                 }
             }
         }
     }
 
     move_left() { // left callback
-        if (!this.game.player.jump) {
+        if (!this.game.player.jump && !this.game.player.gameover) {
             this.game.player.forward = [0, 0, -1];
             if (this.check_movable("left")) {
                 console.log("left");
@@ -101,7 +101,7 @@ export class Main_Scene extends Scene {
     }
 
     move_right() { // right callback
-        if (!this.game.player.jump) {
+        if (!this.game.player.jump && !this.game.player.gameover) {
             this.game.player.forward = [0, 0, 1];
             if (this.check_movable("right")) {
                 console.log("right");
@@ -114,12 +114,23 @@ export class Main_Scene extends Scene {
 
     restart_game() {
         this.setup = false;
+        this.game.player.gameover = false;
+        let gameover_div = document.querySelector("#gameover");
+        gameover_div.style.display = "none";
         this.game = new Game();
     }
 
+    set_gameover() {
+        this.game.player.gameover = true;
+        let gameover_div = document.querySelector("#gameover");
+        gameover_div.style.display = "block";
+    }
+
     change_character() { // character change callback
-        let character_index = Constants.CHARACTERS.indexOf(this.character);
-        this.character = Constants.CHARACTERS[(character_index + 1) % Constants.CHARACTERS.length];
+        if (!this.game.player.gameover) {
+            let character_index = Constants.CHARACTERS.indexOf(this.character);
+            this.character = Constants.CHARACTERS[(character_index + 1) % Constants.CHARACTERS.length];
+        }
     }
 
     display(context, program_state) {
@@ -255,6 +266,11 @@ export class Main_Scene extends Scene {
         if (!this.game.player.jump) {
             // Save last stable player transform
             this.game.player.transform = model_transform;
+        }
+
+        if (this.game.player.gameover) {
+            model_transform = model_transform.times(Mat4.translation(0, -0.4, 0));
+            model_transform = model_transform.times(Mat4.scale(1, 0.1, 1));
         }
 
         switch(this.character) {
@@ -485,11 +501,11 @@ export class Main_Scene extends Scene {
                     let right_car_hitbox = car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.COLLISION_LEEWAY;
                     if (row.car_array.direction == -1 && (left_car_hitbox < right_player_hitbox && right_car_hitbox > left_player_hitbox)) {
                         console.log("Too Bad");
-                        this.restart_game();
+                        this.set_gameover();
                     }
                     else if (row.car_array.direction == 1 && (right_car_hitbox > left_player_hitbox && left_car_hitbox < right_player_hitbox)) {
                         console.log("Too Bad");
-                        this.restart_game();
+                        this.set_gameover();
                     }
                 })
             }
