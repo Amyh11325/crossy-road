@@ -243,19 +243,11 @@ export class Main_Scene extends Scene {
             // previous rotation + sign_direction*offset_scale*difference
             let current_rot = this.game.player.rotation + sign * offset_forward * Math.abs(this.game.player.rotation - target_rot);
             model_transform = model_transform.times(Mat4.rotation(current_rot, 0, 1, 0));
+        } else {
+            model_transform = model_transform.times(Mat4.rotation(this.get_rotation_from_forward(this.game.player.forward), 0, 1, 0));
+            // Save last stable player rotation
+            this.game.player.rotation = this.get_rotation_from_forward(this.game.player.forward);
         }
-        // if (this.game.player.forward[0] === 1) {
-        //     model_transform = model_transform.times(Mat4.rotation(0, 0, 1, 0));
-        //     this.game.player.player_rotation = 0;
-        // } else if (this.game.player.forward[0] === -1) {
-        //     model_transform = model_transform.times(Mat4.rotation(Math.PI, 0, 1, 0));
-        // } else if (this.game.player.forward[2] === 1) {
-        //     model_transform = model_transform.times(Mat4.rotation(-Math.PI/2.0, 0, 1, 0));
-        // } else {
-        //     model_transform = model_transform.times(Mat4.rotation(this.get_rotation_from_forward(this.game.player.forward), 0, 1, 0));
-        //     // Save last stable player rotation
-        //     this.game.player.rotation = this.get_rotation_from_forward(this.game.player.forward);
-        // }
 
         if (!this.game.player.jump) {
             // Save last stable player transform
