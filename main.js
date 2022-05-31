@@ -9,6 +9,7 @@ export class Main_Scene extends Scene {
         super();
 
         this.game = new Game();
+        this.character = Constants.CHARACTERS[0]; // needs to be remembered between games
 
         this.shapes = {
             sphere: new defs.Subdivision_Sphere(8),
@@ -17,21 +18,33 @@ export class Main_Scene extends Scene {
 
         this.materials = {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
-            road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#151520")}),
-            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#101015")}),
-            grass: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
-            grass_bound: new Material(new defs.Phong_Shader(), {ambient: .5, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
+            road: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#555560")}),
+            road_bound: new Material(new defs.Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#454555")}),
+            grass: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#95e06c")}),
+            grass_bound: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
+            tree_trunk: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#653E04")}),
+            tree_leaves: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#459D2C")}),
+            rock: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#828B90")}),
+
             cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
             cube1: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff")}),
             cube2: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000")}),
+            cube3: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e")}),
             sphere: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c")}),
+
             car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
+            tire: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
+
+            chicken_bod: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#F7EBE4")}),
+            chicken_orange: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF6600")}),
+            chicken_red: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF0044")}),
+            chicken_eye: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: 1, color: hex_color("#000000")}),
         };
 
         Constants.CAMERA_PERSPECTIVE === "crossy" ?
             this.camera_location = Mat4.look_at(vec3(-4, 7, Constants.ROW_WIDTH / 2 + 2), vec3(1.5, 1, Constants.ROW_WIDTH / 2 + .5), vec3(0, 1, 0))
             :
-            this.camera_location = Mat4.look_at(vec3(0, 8, Constants.ROW_WIDTH / 2), vec3(0, 0, Constants.ROW_WIDTH / 2), vec3(1, 0, 0));
+            this.camera_location = Mat4.look_at(vec3(4, 15, Math.ceil(Constants.ROW_WIDTH / 2)), vec3(4, 0, Math.ceil(Constants.ROW_WIDTH / 2)), vec3(1, 0, 0));
     }
 
     make_control_panel() {
@@ -40,28 +53,34 @@ export class Main_Scene extends Scene {
         this.key_triggered_button("Move Left", ["a"], this.move_left);
         this.key_triggered_button("Move Right", ["d"], this.move_right);
         this.key_triggered_button("Restart", ["r"], this.restart_game);
-        //this.key_triggered_button("Change character", ["c"], () =>
+        this.key_triggered_button("Change Character", ["c"], this.change_character);
     }
 
     move_forward() { // forward callback
-        if (!this.game.player.jump) {
-            this.game.player.jump = true;
+        if (!this.game.player.jump ) {
             this.game.player.forward = [1, 0, 0];
-            this.game.player.row_num++;
-            if (this.game.score < this.game.player.row_num) { // moving past the best score
-                this.increment_score();
-                this.generate_new_row();
-            }
-        }   
+            if (this.check_movable("forward")) {
+                console.log("forward");
+                this.game.player.jump = true;
+                this.game.player.row_num++;
+                if (this.game.score < this.game.player.row_num) { // moving past the best score
+                    this.increment_score();
+                    this.generate_new_row();
+                }
+            }   
+        }
     }
 
     move_backward() { // backward callback
         if (!this.game.player.jump) {
-            this.game.player.jump = true;
             this.game.player.forward = [-1, 0, 0];
-            this.game.player.row_num--;
-            if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
-                this.restart_game();
+            if (this.check_movable("backward")) {
+                console.log("backwards");
+                this.game.player.jump = true;
+                this.game.player.row_num--;
+                if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
+                    this.restart_game();
+                }
             }
         }
     }
@@ -69,7 +88,9 @@ export class Main_Scene extends Scene {
     move_left() { // left callback
         if (!this.game.player.jump) {
             this.game.player.forward = [0, 0, -1];
-            if (this.game.player.index > Math.floor(Constants.ROW_WIDTH / 2) - Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            if (this.check_movable("left")) {
+                console.log("left");
+                this.game.player.jump = true;
                 this.game.player.index--;
                 this.game.player.jump = true;
             }
@@ -79,7 +100,9 @@ export class Main_Scene extends Scene {
     move_right() { // right callback
         if (!this.game.player.jump) {
             this.game.player.forward = [0, 0, 1];
-            if (this.game.player.index < Math.floor(Constants.ROW_WIDTH / 2) + Math.floor(Constants.PLAYABLE_WIDTH / 2) + 1) {
+            if (this.check_movable("right")) {
+                console.log("right");
+                this.game.player.jump = true;
                 this.game.player.index++;
                 this.game.player.jump = true;
             }
@@ -91,11 +114,14 @@ export class Main_Scene extends Scene {
         this.game = new Game();
     }
 
+    change_character() { // character change callback
+        let character_index = Constants.CHARACTERS.indexOf(this.character);
+        this.character = Constants.CHARACTERS[(character_index + 1) % Constants.CHARACTERS.length];
+    }
 
+    display(context, program_state) {
+        this.pass_score_to_dom();
 
-
-    display(context, program_state) {        
-        
         if (!this.setup) {
             this.camera_setup(context, program_state);
             this.lighting_setup(program_state);
@@ -112,6 +138,13 @@ export class Main_Scene extends Scene {
         this.move_light(context, program_state);
     }
 
+    pass_score_to_dom() {
+        let score_value = document.querySelector("#score");
+        if (score_value) {
+            score_value.innerHTML = this.game.score;
+        }
+    }
+
     camera_setup(context, program_state) { //initial camera setup
         program_state.set_camera(this.camera_location);
 
@@ -126,9 +159,39 @@ export class Main_Scene extends Scene {
     draw_field(context, program_state) { // draw the field from the current game state
         (this.game.field.rows).forEach(row => {
             (row.row).forEach(tile => {
-                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                this.draw_tile(context, program_state, row, tile);
+                //this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
             });
         });
+    }
+
+    draw_tile(context, program_state, row, tile) {
+        switch(tile.type) {
+            case 0:
+            case 1:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                break;
+            case 10:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                break;
+            case 11:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                if (tile.seed / Constants.MAX_SEED < Constants.TREE_BOUND_PERCENT) {
+                    this.draw_tree(context, program_state, row, tile);
+                }
+                break;
+            case 12:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                this.draw_tree(context, program_state, row, tile);
+                break;
+            case 13:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                this.draw_rock(context, program_state, row, tile);
+                break;
+            default:
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
+                break;
+        }
     }
 
     draw_player(context, program_state) { // draw the player character snowman
@@ -180,18 +243,39 @@ export class Main_Scene extends Scene {
             // previous rotation + sign_direction*offset_scale*difference
             let current_rot = this.game.player.rotation + sign * offset_forward * Math.abs(this.game.player.rotation - target_rot);
             model_transform = model_transform.times(Mat4.rotation(current_rot, 0, 1, 0));
-        } else {
-            model_transform = model_transform.times(Mat4.rotation(this.get_rotation_from_forward(this.game.player.forward), 0, 1, 0));
-            // Save last stable player rotation
-            this.game.player.rotation = this.get_rotation_from_forward(this.game.player.forward);
         }
+        // if (this.game.player.forward[0] === 1) {
+        //     model_transform = model_transform.times(Mat4.rotation(0, 0, 1, 0));
+        //     this.game.player.player_rotation = 0;
+        // } else if (this.game.player.forward[0] === -1) {
+        //     model_transform = model_transform.times(Mat4.rotation(Math.PI, 0, 1, 0));
+        // } else if (this.game.player.forward[2] === 1) {
+        //     model_transform = model_transform.times(Mat4.rotation(-Math.PI/2.0, 0, 1, 0));
+        // } else {
+        //     model_transform = model_transform.times(Mat4.rotation(this.get_rotation_from_forward(this.game.player.forward), 0, 1, 0));
+        //     // Save last stable player rotation
+        //     this.game.player.rotation = this.get_rotation_from_forward(this.game.player.forward);
+        // }
 
         if (!this.game.player.jump) {
             // Save last stable player transform
             this.game.player.transform = model_transform;
         }
 
-        //this.shapes.cube.draw(context, program_state, model_transform, this.materials.cube);
+        switch(this.character) {
+            case "Snowman":
+                this.draw_player_snowman(context, program_state, model_transform);
+                break;
+            case "Chicken":
+                this.draw_player_chicken(context, program_state, model_transform);
+                break;
+            default:
+                this.draw_player_snowman(context, program_state, model_transform);
+                break;
+        }
+    }
+
+    draw_player_snowman(context, program_state, model_transform) {
         let model_transform1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
             .times(Mat4.scale(.4, .3, .4))
         let model_transform2 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
@@ -207,22 +291,74 @@ export class Main_Scene extends Scene {
             .times(Mat4.scale(.2, .4, .2))
         let model_transform7 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.4, 0))
             .times(Mat4.scale(.05,.05,.05))
-        let model_transform8 = Mat4.identity().times(model_transform).times(Mat4.translation(0.4, 0.9, 0))
-            .times(Mat4.scale(.05,.05,.05))
+        let model_transform8 = Mat4.identity().times(model_transform).times(Mat4.translation(0.3, 0.9, 0))
+            .times(Mat4.scale(.04,.05,.05))
+        let model_transform9 = Mat4.identity().times(model_transform).times(Mat4.translation(0.3, 1.25, 0))
+            .times(Mat4.scale(.2,.05,.05))
+        //this.player_transform = model_transform;
         let blob = [model_transform1];
         let snowman = [model_transform2, model_transform3, model_transform4, model_transform5, model_transform6,
-            model_transform7, model_transform8];
+            model_transform7, model_transform8, model_transform9];
         let character_selection = [snowman, blob];
-        //if character_selection[i] == snowman
-        for (let i = 0; i < 7; i++) {
+        //if (character_selection[k] == snowman)
+        for (let i = 0; i < 8; i++) {
             if (i<3) {
                 this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube1);
             }
-            else {
+            else if (i < 7){
                 this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube2);
             }
+            else {
+                this.shapes.cube.draw(context, program_state, snowman[i], this.materials.cube3);
+            }
         }
+    }
 
+    draw_player_chicken(context, program_state, model_transform) {
+        let model_transform_body = Mat4.identity().times(model_transform).times((Mat4.translation(0.025, .15, 0)))
+            .times(Mat4.scale(.2, .35, .175))
+        this.shapes.cube.draw(context, program_state, model_transform_body, this.materials.chicken_bod);
+        let model_transform_butt = Mat4.identity().times(model_transform).times((Mat4.translation(-.3, -.05, 0)))
+            .times(Mat4.scale(.125, .15, .175))
+        this.shapes.cube.draw(context, program_state, model_transform_butt, this.materials.chicken_bod);
+        let model_transform_left_wing = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.05, -.225)))
+            .times(Mat4.scale(.2, .1, .05))
+        this.shapes.cube.draw(context, program_state, model_transform_left_wing, this.materials.chicken_bod);
+        let model_transform_right_wing = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.05, .225)))
+            .times(Mat4.scale(.2, .1, .05))
+        this.shapes.cube.draw(context, program_state, model_transform_right_wing, this.materials.chicken_bod);
+        let model_transform_tail = Mat4.identity().times(model_transform).times((Mat4.translation(-.45, .025, 0)))
+            .times(Mat4.scale(.03, .075, .125))
+        this.shapes.cube.draw(context, program_state, model_transform_tail, this.materials.chicken_bod);
+
+        let model_transform_left_leg = Mat4.identity().times(model_transform).times((Mat4.translation(-.1, -.25, -.1)))
+            .times(Mat4.scale(.025, .15, .025))
+        this.shapes.cube.draw(context, program_state, model_transform_left_leg, this.materials.chicken_orange);
+        let model_transform_left_foot = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.4, -.1)))
+            .times(Mat4.scale(.125, .025, .075))
+        this.shapes.cube.draw(context, program_state, model_transform_left_foot, this.materials.chicken_orange);
+        let model_transform_right_leg = Mat4.identity().times(model_transform).times((Mat4.translation(-.1, -.25, .1)))
+            .times(Mat4.scale(.025, .15, .025))
+        this.shapes.cube.draw(context, program_state, model_transform_right_leg, this.materials.chicken_orange);
+        let model_transform_right_foot = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.4, .1)))
+            .times(Mat4.scale(.125, .025, .075))
+        this.shapes.cube.draw(context, program_state, model_transform_right_foot, this.materials.chicken_orange);
+
+        let model_transform_beak = Mat4.identity().times(model_transform).times((Mat4.translation(.3, .35, 0)))
+            .times(Mat4.scale(.075, .05, .05))
+        this.shapes.cube.draw(context, program_state, model_transform_beak, this.materials.chicken_orange);
+        let model_transform_wattle = Mat4.identity().times(model_transform).times((Mat4.translation(.275, .25, 0)))
+            .times(Mat4.scale(.05, .05, .05))
+        this.shapes.cube.draw(context, program_state, model_transform_wattle, this.materials.chicken_red);
+        let model_transform_comb = Mat4.identity().times(model_transform).times((Mat4.translation(.025, .55, 0)))
+            .times(Mat4.scale(.125, .05, .05))
+        this.shapes.cube.draw(context, program_state, model_transform_comb, this.materials.chicken_red);
+        let model_transform_left_eye = Mat4.identity().times(model_transform).times((Mat4.translation(.085, .375, -.15)))
+            .times(Mat4.scale(.035, .035, .035))
+        this.shapes.cube.draw(context, program_state, model_transform_left_eye, this.materials.chicken_eye);
+        let model_transform_right_eye = Mat4.identity().times(model_transform).times((Mat4.translation(.085, .375, .15)))
+            .times(Mat4.scale(.035, .035, .035))
+        this.shapes.cube.draw(context, program_state, model_transform_right_eye, this.materials.chicken_eye);
     }
 
     get_rotation_from_forward(forward) {
@@ -240,15 +376,46 @@ export class Main_Scene extends Scene {
     draw_cars(context, program_state, dt) { // draw and move the cars per row
         (this.game.field.rows).forEach(row => {
             (row.car_array.cars).forEach(car => {
-                let model_transform = Mat4.identity().times(Mat4.translation(row.row_num, 1, car.position))
-                    .times(Mat4.scale(.4, .5, .8 * (Constants.OBSTACLE_WIDTH / 2)));
-                this.shapes.cube.draw(context, program_state, model_transform, this.materials.car);
+                let model_transform_car_body = Mat4.identity().times(Mat4.translation(row.row_num, 1 - .2, car.position))
+                    .times(Mat4.scale(Constants.CAR_BODY_WIDTH, Constants.CAR_BODY_HEIGHT, .8 * (Constants.OBSTACLE_WIDTH / 2)));
+                let model_transform_car_top = Mat4.identity().times(Mat4.translation(row.row_num, 1 + .15, car.position))
+                    .times(Mat4.scale(Constants.CAR_BODY_WIDTH, Constants.CAR_TOP_HEIGHT, .8 * (Constants.OBSTACLE_WIDTH / 2) * .65));
+                let model_transform_wheel1 = Mat4.identity().times(Mat4.translation(row.row_num - Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                let model_transform_wheel2 = Mat4.identity().times(Mat4.translation(row.row_num - Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                let model_transform_wheel3 = Mat4.identity().times(Mat4.translation(row.row_num + Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position + Constants.OBSTACLE_WIDTH / 2 - Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                let model_transform_wheel4 = Mat4.identity().times(Mat4.translation(row.row_num + Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.WHEEL_OFFSET))
+                    .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
+                this.shapes.cube.draw(context, program_state, model_transform_car_body, this.materials.car.override({color: hex_color(car.color)}));
+                this.shapes.cube.draw(context, program_state, model_transform_car_top, this.materials.car.override({color: hex_color(car.color)}));
+                this.shapes.cube.draw(context, program_state, model_transform_wheel1, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel2, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel3, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel4, this.materials.tire);
                 car.position = (car.position + (dt * row.car_array.direction * row.car_array.speed)) % Constants.ROW_WIDTH;
                 if (car.position < 0) {
                     car.position = car.position + Constants.ROW_WIDTH;
                 }
             });
         });
+    }
+
+    draw_tree(context, program_state, row, tile) {
+        let model_transform_trunk = Mat4.identity().times(Mat4.translation(row.row_num, 1, tile.index))
+            .times(Mat4.scale(Constants.TREE_TRUNK_WIDTH, .4, Constants.TREE_TRUNK_WIDTH));
+        this.shapes.cube.draw(context, program_state, model_transform_trunk, this.materials.tree_trunk);
+        let model_transform_leaves = Mat4.identity().times(Mat4.translation(row.row_num, Constants.TREE_LEAVES_BASE_HEIGHT, tile.index))
+            .times(Mat4.scale(Constants.TREE_LEAVES_WIDTH, .4 + tile.seed / Constants.MAX_SEED * Constants.TREE_HEIGHT_MULTIPLIER, Constants.TREE_LEAVES_WIDTH))
+            .times(Mat4.translation(0, 1, 0));
+        this.shapes.cube.draw(context, program_state, model_transform_leaves, this.materials.tree_leaves);
+    }
+
+    draw_rock(context, program_state, row, tile) {
+        let model_transform_rock = Mat4.identity().times(Mat4.translation(row.row_num, .8, tile.index))
+            .times(Mat4.scale(Constants.ROCK_WIDTH, Constants.ROCK_HEIGHT, Constants.ROCK_WIDTH));
+        this.shapes.cube.draw(context, program_state, model_transform_rock, this.materials.rock);
     }
 
     check_collisions() {
@@ -271,6 +438,34 @@ export class Main_Scene extends Scene {
                 })
             }
         })
+    }
+
+    check_movable(direction) {
+        let current_row_num = this.game.player.row_num;
+        let current_row = this.game.field.rows.find(x => x.row_num == current_row_num).row;
+        let current_index = this.game.player.index
+        switch(direction) {
+            case "forward":
+                let forward_row = this.game.field.rows.find(x => x.row_num == current_row_num + 1).row;
+                let forward_tile = forward_row.find(x => x.index == current_index);
+                return this.check_movable_type(forward_tile.type);
+            case "backward":
+                let backward_row = this.game.field.rows.find(x => x.row_num == current_row_num - 1).row;
+                let backward_tile = backward_row.find(x => x.index == current_index);
+                return this.check_movable_type(backward_tile.type);
+            case "left":
+                let left_tile = current_row.find(x => x.index == current_index - 1);
+                return this.check_movable_type(left_tile.type);
+            case "right":
+                let right_tile = current_row.find(x => x.index == current_index + 1);
+                return this.check_movable_type(right_tile.type);
+            default:
+                return false;
+        }
+    }
+
+    check_movable_type(type) {
+        return !((type > 10 && type < 20) || type == 1)
     }
 
     move_camera(context, program_state) { // move the camera forward if needed
@@ -305,6 +500,8 @@ export class Main_Scene extends Scene {
                 .times(Mat4.scale(.5, .5, .5));
             case 10:
             case 11:
+            case 12:
+            case 13:
                 return Mat4.identity().times(Mat4.translation(row.row_num, 0, tile.index))
                 .times(Mat4.scale(.5, .6, .5));
             default:
@@ -318,6 +515,8 @@ export class Main_Scene extends Scene {
             case 0:
                 return this.materials.road;
             case 10:
+            case 12:
+            case 13:
                 return this.materials.grass;
             case 1:
                 return this.materials.road_bound;

@@ -3,15 +3,81 @@
 -->
 <!DOCTYPE html>
 <html lang="En">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courgette&family=Press+Start+2P&display=swap" rel="stylesheet">
 <head>
     <meta charset="UTF-8"/>
     <link href="assets/fav.ico" rel="icon">
     <title>Tiny Graphics</title>
 </head>
-<body style="background: White">
+<style>
+    body {
+        background-color: #34d1f0;
+        font-family: 'Press Start 2P', cursive;
+    }
+    #logo {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .canvas-widget {
+        border: 20px solid azure;
+        box-shadow: 0 0  10px -5px black;
+        background-color: azure;
+        width: 1080px;
+        position: relative;
+    }
+    .controls-widget {
+        height: 0px;
+        visibility: visible;
+        margin-top: 50px;
+    }
+    .logo-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .logo-wrapper a {
+        width: 30%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #score-overlay {
+        position: absolute;
+        right: 40px;
+        top: 40px;
+    }
+    #score {
+        font-size: 40px;
+        color: azure;
+        text-shadow: 0 0 10px black;
+        text-align: right;
+    }
+</style>
+<body>
 <!-- Begin typing your web page here. -->
 <!-- The following code embeds a WebGL canvas panel, loads certain scene(s), and displays panel(s) of their controls.-->
-<div class="canvas-widget" id="main-canvas"></div>
+<div class="logo-wrapper">
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
+        <img src="Logo.png" id="logo">
+    </a>
+</div>
+<div class="wrapper">
+    <div class="canvas-widget" id="main-canvas">
+        <div id="score-overlay">
+            <div id="score">0</div>
+        </div>
+    </div>
+</div>
 <script type=module>
     // ********************* THE ENTRY POINT OF YOUR WHOLE PROGRAM STARTS HERE *********************
     // Indicate which element on the page you want the Canvas_Widget to replace with a 3D WebGL area:
