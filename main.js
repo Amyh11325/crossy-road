@@ -286,6 +286,9 @@ export class Main_Scene extends Scene {
             case "Blob":
                 this.draw_player_blob(context, program_state, model_transform);
                 break;
+            case "Dog":
+                this.draw_player_dog(context, program_state, model_transform);
+                break;
             default:
                 this.draw_player_snowman(context, program_state, model_transform);
                 break;
@@ -433,6 +436,55 @@ export class Main_Scene extends Scene {
             .times(Mat4.scale(.05, .06, .07))
         this.shapes.cube.draw(context, program_state, model_transformb5, this.materials.cube6);
     }
+
+    draw_player_dog(context, program_state, model_transform){
+        let model_transformf1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, .5, 0)))
+            .times(Mat4.scale(.6, .4, .4))
+        this.shapes.cube.draw(context, program_state, model_transformf1, this.materials.cube3)
+        let model_transformf2 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 0, 0.3)))
+            .times(Mat4.scale(.1, .4, .1))
+        this.shapes.cube.draw(context, program_state, model_transformf2, this.materials.cube3)
+        let model_transformf3 = Mat4.identity().times(model_transform).times((Mat4.translation(-0.4, 0, -0.3)))
+            .times(Mat4.scale(.1, .4, .1))
+        this.shapes.cube.draw(context, program_state, model_transformf3, this.materials.cube3)
+        let model_transformf4 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 0, -0.3)))
+            .times(Mat4.scale(.1, .4, .1))
+        this.shapes.cube.draw(context, program_state, model_transformf4, this.materials.cube3)
+        let model_transformf5 = Mat4.identity().times(model_transform).times((Mat4.translation(-0.4, 0, 0.3)))
+            .times(Mat4.scale(.1, .4, .1))
+        this.shapes.cube.draw(context, program_state, model_transformf5, this.materials.cube3)
+        let model_transformf6 = Mat4.identity().times(model_transform).times((Mat4.translation(0.3, 1.2, 0)))
+            .times(Mat4.scale(.3, .3, .3))
+        this.shapes.cube.draw(context, program_state, model_transformf6, this.materials.cube3)
+        let model_transformf7 = Mat4.identity().times(model_transform).times((Mat4.translation(0.5, 1.17, 0)))
+            .times(Mat4.scale(.3, .1, .15))
+        this.shapes.cube.draw(context, program_state, model_transformf7, this.materials.cube3) //snout
+        let model_transformf8 = Mat4.identity().times(model_transform).times((Mat4.translation(0.83, 1.25, 0)))
+            .times(Mat4.scale(.06, .06, .06))
+        this.shapes.cube.draw(context, program_state, model_transformf8, this.materials.cube2) //nose
+        let model_transformf9 = Mat4.identity().times(model_transform).times((Mat4.translation(-0.7, 1, 0)))
+            .times(Mat4.rotation(-.8,0,1,-1))
+            .times(Mat4.scale(.1, .25, .1))
+        this.shapes.cube.draw(context, program_state, model_transformf9, this.materials.cube3) //tail
+        let model_transformf10 = Mat4.identity().times(model_transform).times((Mat4.translation(0.32, 0.35, 0)))
+            .times(Mat4.scale(.3, .3, .3))
+        this.shapes.cube.draw(context, program_state, model_transformf10, this.materials.cube1)
+        let model_transformf11 = Mat4.identity().times(model_transform).times((Mat4.translation(0.49, 1.5, 0.3)))
+            .times(Mat4.rotation(-0.5,0,1,1))
+            .times(Mat4.scale(.05, .15, .15))
+        this.shapes.cube.draw(context, program_state, model_transformf11, this.materials.cube3)
+        let model_transformf12 = Mat4.identity().times(model_transform).times((Mat4.translation(0.49, 1.5, -0.3)))
+            .times(Mat4.rotation(-0.6,0,-1,1))
+            .times(Mat4.scale(.05, .15, .15))
+        this.shapes.cube.draw(context, program_state, model_transformf12, this.materials.cube3)
+        let model_transformf13 = Mat4.identity().times(model_transform).times((Mat4.translation(0.6, 1.3, .17)))
+            .times(Mat4.scale(.03, .04, .03))
+        this.shapes.cube.draw(context, program_state, model_transformf13, this.materials.cube2)
+        let model_transformf14 = Mat4.identity().times(model_transform).times((Mat4.translation(0.6, 1.3, -.17)))
+            .times(Mat4.scale(.03, .04, .03))
+        this.shapes.cube.draw(context, program_state, model_transformf14, this.materials.cube2)
+    }
+
     get_rotation_from_forward(forward) {
         if (forward[0] === 1) {
             return 0;
