@@ -62,6 +62,18 @@
         text-shadow: 0 0 10px black;
         text-align: right;
     }
+    #gameover-overlay {
+        position: absolute;
+        left: 15%;
+        top: 30%;
+    }
+    #gameover {
+        font-size: 80px;
+        color: azure;
+        text-shadow: 0 0 10px black;
+        text-align: center;
+        display: none;
+    }
 </style>
 <body>
 <!-- Begin typing your web page here. -->
@@ -76,8 +88,12 @@
         <div id="score-overlay">
             <div id="score">0</div>
         </div>
+        <div id="gameover-overlay">
+            <div id="gameover">GAME OVER</div>
+        </div>
     </div>
 </div>
+
 <script type=module>
     // ********************* THE ENTRY POINT OF YOUR WHOLE PROGRAM STARTS HERE *********************
     // Indicate which element on the page you want the Canvas_Widget to replace with a 3D WebGL area:
