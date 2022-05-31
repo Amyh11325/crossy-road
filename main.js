@@ -30,6 +30,9 @@ export class Main_Scene extends Scene {
             cube1: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff")}),
             cube2: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000")}),
             cube3: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e")}),
+            cube4: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffda03")}),
+            cube5: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#06c4ef")}),
+            cube6: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#e087c2")}),
             sphere: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c")}),
 
             car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
@@ -261,6 +264,12 @@ export class Main_Scene extends Scene {
             case "Chicken":
                 this.draw_player_chicken(context, program_state, model_transform);
                 break;
+            case "Penguin":
+                this.draw_player_penguin(context, program_state, model_transform);
+                break;
+            case "Blob":
+                this.draw_player_blob(context, program_state, model_transform);
+                break;
             default:
                 this.draw_player_snowman(context, program_state, model_transform);
                 break;
@@ -353,6 +362,61 @@ export class Main_Scene extends Scene {
         this.shapes.cube.draw(context, program_state, model_transform_right_eye, this.materials.chicken_eye);
     }
 
+    draw_player_penguin(context, program_state, model_transform) {
+        let model_transformp1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0.4, 0)))
+            .times(Mat4.scale(.35, .7, .35))
+        this.shapes.cube.draw(context, program_state, model_transformp1, this.materials.cube2);
+        let model_transformp2 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 1.2, 0)))
+            .times(Mat4.scale(.4, .4, .4))
+        this.shapes.cube.draw(context, program_state, model_transformp2, this.materials.cube2);
+        let model_transformp3 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, -0.2, 0.3)))
+            .times(Mat4.scale(.2, .08, .2))
+        this.shapes.cube.draw(context, program_state, model_transformp3, this.materials.cube4);
+        let model_transformp4 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, -0.2, -0.3)))
+            .times(Mat4.scale(.2, .08, .2))
+        this.shapes.cube.draw(context, program_state, model_transformp4, this.materials.cube4);
+        let model_transformp5 = Mat4.identity().times(model_transform).times((Mat4.translation(0.02, 0.4, 0)))
+            .times(Mat4.scale(.36, .6, .3))
+        this.shapes.cube.draw(context, program_state, model_transformp5, this.materials.cube1);
+        let model_transformp6 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0.4, 0.4)))
+            .times((Mat4.rotation(.8,-1,0,1)))
+            .times(Mat4.scale(.2, .4, .05))
+        this.shapes.cube.draw(context, program_state, model_transformp6, this.materials.cube2);
+        let model_transformp7 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0.4, -0.4)))
+            .times((Mat4.rotation(.8,1,0,1)))
+            .times(Mat4.scale(.2, .4, .05))
+        this.shapes.cube.draw(context, program_state, model_transformp7, this.materials.cube2);
+        let model_transformp8 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 1.2, 0)))
+            .times(Mat4.scale(.15, .05, .2))
+        this.shapes.cube.draw(context, program_state, model_transformp8, this.materials.cube4);
+        let model_transformp9 = Mat4.identity().times(model_transform).times((Mat4.translation(0.12, 1.3, 0)))
+            .times(Mat4.scale(.3, .2, .3))
+        this.shapes.cube.draw(context, program_state, model_transformp9, this.materials.cube1);
+        let model_transformp10 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 1.33, 0.16)))
+            .times(Mat4.scale(.05, .09, .05))
+        this.shapes.cube.draw(context, program_state, model_transformp10, this.materials.cube2);
+        let model_transformp11 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 1.33, -0.16)))
+            .times(Mat4.scale(.05, .09, .05))
+        this.shapes.cube.draw(context, program_state, model_transformp11, this.materials.cube2);
+    }
+
+    draw_player_blob(context, program_state, model_transform){
+        let model_transformb1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
+            .times(Mat4.scale(.4, .35, .4))
+        this.shapes.cube.draw(context, program_state, model_transformb1, this.materials.cube5);
+        let model_transformb2 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .3, 0.16)))
+            .times(Mat4.scale(.05, .09, .05))
+        this.shapes.cube.draw(context, program_state, model_transformb2, this.materials.cube2);
+        let model_transformb3 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .3, -0.16)))
+            .times(Mat4.scale(.05, .09, .05))
+        this.shapes.cube.draw(context, program_state, model_transformb3, this.materials.cube2);
+        let model_transformb4 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .15, 0.2)))
+            .times(Mat4.scale(.05, .06, .07))
+        this.shapes.cube.draw(context, program_state, model_transformb4, this.materials.cube6);
+        let model_transformb5 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .15, -0.2)))
+            .times(Mat4.scale(.05, .06, .07))
+        this.shapes.cube.draw(context, program_state, model_transformb5, this.materials.cube6);
+    }
     get_rotation_from_forward(forward) {
         if (forward[0] === 1) {
             return 0;
