@@ -26,8 +26,8 @@ export const BACKWARDS_LIMIT = 4; // the number of rows backwards the player can
 // the obstacles here refer to cars
 export const OBSTACLE_WIDTH = 2; // the length of an obstacle on the road
 export const MIN_OBSTACLE_SPACING = 3; // the minimum distance between obstacles
-export const MIN_OBSTACLE_SPEED = .8; // the minimum speed of an obstacle
-export const MAX_OBSTACLE_SPEED = 2; // the minimum speed of an obstacle
+export const MIN_OBSTACLE_SPEED = .7; // the minimum speed of an obstacle
+export const MAX_OBSTACLE_SPEED = 1.6; // the minimum speed of an obstacle
 export const COLLISION_LEEWAY = .2; // amount of leeway allowed before a collision is registered
 
 // blockers are rocks and trees
@@ -62,5 +62,7 @@ export const WHEEL_OFFSET = .6; // the distance the wheel is from the front/back
 
 export const CAMERA_PERSPECTIVE = "crossy" // "crossy": diagonal camera, "flat": straight down view
 export const CAMERA_SMOOTHING = .025; // smoothing for camera movement, smaller means more smoothing
+export const LIGHT_X_SKEW = 1;
+export const LIGHT_Y_SKEW = 6;
 
 export const JUMP_TIME = 0.4;

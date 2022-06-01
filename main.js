@@ -22,31 +22,31 @@ export class Main_Scene extends Scene {
 
         this.materials = {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
-            road: new Material(new Shadow_Textured_Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#555560"), smoothness: 64}),
-            road_bound: new Material(new Shadow_Textured_Phong_Shader(), {ambient: 1, diffusivity: .2, specularity: 0, color: hex_color("#454555"), smoothness: 64}),
-            grass: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#95e06c"), smoothness: 64, color_texture: null, light_depth_texture: null}),
-            grass_bound: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .3, specularity: .1, color: hex_color("#6CB047")}),
-            tree_trunk: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#653E04")}),
-            tree_leaves: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#459D2C")}),
-            rock: new Material(new defs.Phong_Shader(), {ambient: .6, diffusivity: .4, specularity: .1, color: hex_color("#828B90")}),
+            road: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#555560"), smoothness: 64}),
+            road_bound: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#454555"), smoothness: 64}),
+            grass: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .7, diffusivity: .4, specularity: 0, color: hex_color("#95e06c"), smoothness: 64}),
+            grass_bound: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .3, specularity: 0, color: hex_color("#6CB047"), smoothness: 64}),
+            tree_trunk: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#653E04"), smoothness: 64}),
+            tree_leaves: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#459D2C"), smoothness: 64}),
+            rock: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#828B90"), smoothness: 64}),
 
-            cube: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7")}),
-            cube1: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff")}),
-            cube1: new Material(new Shadow_Textured_Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
-            cube2: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000")}),
-            cube3: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e")}),
-            cube4: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffda03")}),
-            cube5: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#06c4ef")}),
-            cube6: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#e087c2")}),
-            sphere: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c")}),
+            cube: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7"), smoothness: 64}),
+            cube1: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
+            cube1: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
+            cube2: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000"), smoothness: 64}),
+            cube3: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e"), smoothness: 64}),
+            cube4: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffda03"), smoothness: 64}),
+            cube5: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#06c4ef"), smoothness: 64}),
+            cube6: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#e087c2"), smoothness: 64}),
+            sphere: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c"), smoothness: 64}),
 
-            car: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
-            tire: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
+            car: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
+            tire: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
 
-            chicken_bod: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#F7EBE4")}),
-            chicken_orange: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF6600")}),
-            chicken_red: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF0044")}),
-            chicken_eye: new Material(new defs.Phong_Shader(), {ambient: .8, diffusivity: .6, specularity: 1, color: hex_color("#000000")}),
+            chicken_bod: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#F7EBE4"), smoothness: 64}),
+            chicken_orange: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF6600"), smoothness: 64}),
+            chicken_red: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF0044"), smoothness: 64}),
+            chicken_eye: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: 1, color: hex_color("#000000"), smoothness: 64}),
         };
 
         this.pure = new Material(new Color_Phong_Shader(), {});
@@ -212,48 +212,10 @@ export class Main_Scene extends Scene {
     }
 
     render_scene(context, program_state, shadow_pass, draw_light_source=false, draw_shadow=false) {
-        // shadow_pass: true if this is the second pass that draw the shadow.
-        // draw_light_source: true if we want to draw the light source.
-        // draw_shadow: true if we want to draw the shadow
-
-        let light_position = this.light_position;
-        let light_color = this.light_color;
-        const t = program_state.animation_time; 
         const dt = program_state.animation_delta_time / 1000;
 
         program_state.draw_shadow = draw_shadow;
 
-        // if (draw_light_source && shadow_pass) {
-        //     this.shapes.sphere.draw(context, program_state,
-        //         Mat4.translation(light_position[0], light_position[1], light_position[2]).times(Mat4.scale(.5,.5,.5)),
-        //         this.light_src.override({color: light_color}));
-        // }
-
-        // for (let i of [-1, 1]) { // Spin the 3D model shapes as well.
-        //     const model_transform = Mat4.translation(2 * i, 3, 0)
-        //         .times(Mat4.rotation(t / 1000, -1, 2, 0))
-        //         .times(Mat4.rotation(-Math.PI / 2, 1, 0, 0));
-        //     this.shapes.teapot.draw(context, program_state, model_transform, shadow_pass? this.stars : this.pure);
-        // }
-
-        // let model_trans_floor = Mat4.scale(8, 0.1, 5);
-        // let model_trans_ball_0 = Mat4.translation(0, 1, 0);
-        // let model_trans_ball_1 = Mat4.translation(5, 1, 0);
-        // let model_trans_ball_2 = Mat4.translation(-5, 1, 0);
-        // let model_trans_ball_3 = Mat4.translation(0, 1, 3);
-        // let model_trans_ball_4 = Mat4.translation(0, 1, -3);
-        // let model_trans_wall_1 = Mat4.translation(-8, 2 - 0.1, 0).times(Mat4.scale(0.33, 2, 5));
-        // let model_trans_wall_2 = Mat4.translation(+8, 2 - 0.1, 0).times(Mat4.scale(0.33, 2, 5));
-        // let model_trans_wall_3 = Mat4.translation(0, 2 - 0.1, -5).times(Mat4.scale(8, 2, 0.33));
-        // this.shapes.cube.draw(context, program_state, model_trans_floor, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.cube.draw(context, program_state, model_trans_wall_1, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.cube.draw(context, program_state, model_trans_wall_2, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.cube.draw(context, program_state, model_trans_wall_3, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.sphere.draw(context, program_state, model_trans_ball_0, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.sphere.draw(context, program_state, model_trans_ball_1, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.sphere.draw(context, program_state, model_trans_ball_2, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.sphere.draw(context, program_state, model_trans_ball_3, shadow_pass? this.materials.grass : this.pure);
-        // this.shapes.sphere.draw(context, program_state, model_trans_ball_4, shadow_pass? this.materials.grass : this.pure);
         this.draw_field(context, program_state, shadow_pass);
         this.draw_player(context, program_state, shadow_pass);
         this.draw_cars(context, program_state, dt);
@@ -275,15 +237,6 @@ export class Main_Scene extends Scene {
             this.texture_buffer_init(gl);
             this.init_ok = true;
         }
-        // if (!context.scratchpad.controls) {
-        //     this.children.push(context.scratchpad.controls = new defs.Movement_Controls());
-        //     // Define the global camera and projection matrices, which are stored in program_state.
-        //     program_state.set_camera(Mat4.look_at(
-        //         vec3(0, 12, 12),
-        //         vec3(0, 2, 0),
-        //         vec3(0, 1, 0)
-        //     )); // Locate the camera here
-        // }
 
         if (!this.setup) {
             this.camera_setup(context, program_state);
@@ -294,10 +247,14 @@ export class Main_Scene extends Scene {
         // let desired_position = this.camera_location.times(Mat4.inverse(Mat4.translation(this.game.score - 1, 0, 0)));
         //     desired_position = desired_position.map((x, i) => Vector.from(Mat4.inverse(program_state.camera_transform)[i]).mix(x, Constants.CAMERA_SMOOTHING));
         //     program_state.set_camera((desired_position));
-        let light_desired_position = 
-        this.light_position = vec4(this.game.player.row_num + 1.25, 4, this.game.player.index - .5, 1);
+        // this.light_position = vec4(this.game.player.row_num + 1.25, 4, this.game.player.index - .5, 1);
+        // this.light_position = vec4(this.game.player.row_num + 1.25, 4, this.game.player.index - .5, 1);
+        // this.light_color = color(.973, .957, .89, 1);
+        //this.light_view_target = vec4(this.game.player.row_num, 0, this.game.player.index -, 1);
+        // this.light_field_of_view = 130 * Math.PI / 180;
+        this.light_position = vec4(this.game.player.row_num + Constants.LIGHT_X_SKEW, Constants.LIGHT_Y_SKEW, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2 - 1, 1);
         this.light_color = color(.973, .957, .89, 1);
-        this.light_view_target = vec4(this.game.player.row_num, 0, this.game.player.index, 1);
+        this.light_view_target = vec4(this.game.player.row_num + Constants.LIGHT_X_SKEW, 0, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2, 1);
         this.light_field_of_view = 130 * Math.PI / 180;
         
         // The position of the light
@@ -396,7 +353,7 @@ export class Main_Scene extends Scene {
                 this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
                 break;
             case 10:
-                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), shadow_pass ? this.get_field_material(tile.type): this.pure);
+                this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
                 break;
             case 11:
                 this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
@@ -492,19 +449,19 @@ export class Main_Scene extends Scene {
                 this.draw_player_snowman(context, program_state, model_transform, shadow_pass);
                 break;
             case "Chicken":
-                this.draw_player_chicken(context, program_state, model_transform);
+                this.draw_player_chicken(context, program_state, model_transform, shadow_pass);
                 break;
             case "Penguin":
-                this.draw_player_penguin(context, program_state, model_transform);
+                this.draw_player_penguin(context, program_state, model_transform, shadow_pass);
                 break;
             case "Blob":
-                this.draw_player_blob(context, program_state, model_transform);
+                this.draw_player_blob(context, program_state, model_transform, shadow_pass);
                 break;
             case "Dog":
-                this.draw_player_dog(context, program_state, model_transform);
+                this.draw_player_dog(context, program_state, model_transform, shadow_pass);
                 break;
             default:
-                this.draw_player_snowman(context, program_state, model_transform);
+                this.draw_player_snowman(context, program_state, model_transform, shadow_pass);
                 break;
         }
     }
@@ -548,45 +505,45 @@ export class Main_Scene extends Scene {
         }
     }
 
-    draw_player_chicken(context, program_state, model_transform) {
+    draw_player_chicken(context, program_state, model_transform, shadow_pass) {
         let model_transform_body = Mat4.identity().times(model_transform).times((Mat4.translation(0.025, .15, 0)))
             .times(Mat4.scale(.2, .35, .175))
-        this.shapes.cube.draw(context, program_state, model_transform_body, this.materials.chicken_bod);
+        this.shapes.cube.draw(context, program_state, model_transform_body, shadow_pass ? this.materials.chicken_bod : this.pure);
         let model_transform_butt = Mat4.identity().times(model_transform).times((Mat4.translation(-.3, -.05, 0)))
             .times(Mat4.scale(.125, .15, .175))
-        this.shapes.cube.draw(context, program_state, model_transform_butt, this.materials.chicken_bod);
+        this.shapes.cube.draw(context, program_state, model_transform_butt, shadow_pass ? this.materials.chicken_bod : this.pure);
         let model_transform_left_wing = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.05, -.225)))
             .times(Mat4.scale(.2, .1, .05))
-        this.shapes.cube.draw(context, program_state, model_transform_left_wing, this.materials.chicken_bod);
+        this.shapes.cube.draw(context, program_state, model_transform_left_wing, shadow_pass ? this.materials.chicken_bod : this.pure);
         let model_transform_right_wing = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.05, .225)))
             .times(Mat4.scale(.2, .1, .05))
-        this.shapes.cube.draw(context, program_state, model_transform_right_wing, this.materials.chicken_bod);
+        this.shapes.cube.draw(context, program_state, model_transform_right_wing, shadow_pass ? this.materials.chicken_bod : this.pure);
         let model_transform_tail = Mat4.identity().times(model_transform).times((Mat4.translation(-.45, .025, 0)))
             .times(Mat4.scale(.03, .075, .125))
-        this.shapes.cube.draw(context, program_state, model_transform_tail, this.materials.chicken_bod);
+        this.shapes.cube.draw(context, program_state, model_transform_tail, shadow_pass ? this.materials.chicken_bod : this.pure);
 
         let model_transform_left_leg = Mat4.identity().times(model_transform).times((Mat4.translation(-.1, -.25, -.1)))
             .times(Mat4.scale(.025, .15, .025))
-        this.shapes.cube.draw(context, program_state, model_transform_left_leg, this.materials.chicken_orange);
+        this.shapes.cube.draw(context, program_state, model_transform_left_leg, shadow_pass ? this.materials.chicken_orange : this.pure);
         let model_transform_left_foot = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.4, -.1)))
             .times(Mat4.scale(.125, .025, .075))
-        this.shapes.cube.draw(context, program_state, model_transform_left_foot, this.materials.chicken_orange);
+        this.shapes.cube.draw(context, program_state, model_transform_left_foot, shadow_pass ? this.materials.chicken_orange : this.pure);
         let model_transform_right_leg = Mat4.identity().times(model_transform).times((Mat4.translation(-.1, -.25, .1)))
             .times(Mat4.scale(.025, .15, .025))
-        this.shapes.cube.draw(context, program_state, model_transform_right_leg, this.materials.chicken_orange);
+        this.shapes.cube.draw(context, program_state, model_transform_right_leg, shadow_pass ? this.materials.chicken_orange : this.pure);
         let model_transform_right_foot = Mat4.identity().times(model_transform).times((Mat4.translation(-.05, -.4, .1)))
             .times(Mat4.scale(.125, .025, .075))
-        this.shapes.cube.draw(context, program_state, model_transform_right_foot, this.materials.chicken_orange);
+        this.shapes.cube.draw(context, program_state, model_transform_right_foot, shadow_pass ? this.materials.chicken_orange : this.pure);
 
         let model_transform_beak = Mat4.identity().times(model_transform).times((Mat4.translation(.3, .35, 0)))
             .times(Mat4.scale(.075, .05, .05))
-        this.shapes.cube.draw(context, program_state, model_transform_beak, this.materials.chicken_orange);
+        this.shapes.cube.draw(context, program_state, model_transform_beak, shadow_pass ? this.materials.chicken_orange : this.pure);
         let model_transform_wattle = Mat4.identity().times(model_transform).times((Mat4.translation(.275, .25, 0)))
             .times(Mat4.scale(.05, .05, .05))
-        this.shapes.cube.draw(context, program_state, model_transform_wattle, this.materials.chicken_red);
+        this.shapes.cube.draw(context, program_state, model_transform_wattle, shadow_pass ? this.materials.chicken_red : this.pure);
         let model_transform_comb = Mat4.identity().times(model_transform).times((Mat4.translation(.025, .55, 0)))
             .times(Mat4.scale(.125, .05, .05))
-        this.shapes.cube.draw(context, program_state, model_transform_comb, this.materials.chicken_red);
+        this.shapes.cube.draw(context, program_state, model_transform_comb, shadow_pass ? this.materials.chicken_red : this.pure);
         let model_transform_left_eye = Mat4.identity().times(model_transform).times((Mat4.translation(.085, .375, -.15)))
             .times(Mat4.scale(.035, .035, .035))
         this.shapes.cube.draw(context, program_state, model_transform_left_eye, this.materials.chicken_eye);
@@ -595,108 +552,108 @@ export class Main_Scene extends Scene {
         this.shapes.cube.draw(context, program_state, model_transform_right_eye, this.materials.chicken_eye);
     }
 
-    draw_player_penguin(context, program_state, model_transform) {
+    draw_player_penguin(context, program_state, model_transform, shadow_pass) {
         let model_transformp1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0.4, 0)))
             .times(Mat4.scale(.35, .7, .35))
-        this.shapes.cube.draw(context, program_state, model_transformp1, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformp1, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformp2 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 1.2, 0)))
             .times(Mat4.scale(.4, .4, .4))
-        this.shapes.cube.draw(context, program_state, model_transformp2, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformp2, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformp3 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, -0.2, 0.3)))
             .times(Mat4.scale(.2, .08, .2))
-        this.shapes.cube.draw(context, program_state, model_transformp3, this.materials.cube4);
+        this.shapes.cube.draw(context, program_state, model_transformp3, shadow_pass ? this.materials.cube4 : this.pure);
         let model_transformp4 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, -0.2, -0.3)))
             .times(Mat4.scale(.2, .08, .2))
-        this.shapes.cube.draw(context, program_state, model_transformp4, this.materials.cube4);
+        this.shapes.cube.draw(context, program_state, model_transformp4, shadow_pass ? this.materials.cube4 : this.pure);
         let model_transformp5 = Mat4.identity().times(model_transform).times((Mat4.translation(0.02, 0.4, 0)))
             .times(Mat4.scale(.36, .6, .3))
-        this.shapes.cube.draw(context, program_state, model_transformp5, this.materials.cube1);
+        this.shapes.cube.draw(context, program_state, model_transformp5, shadow_pass ? this.materials.cube1 : this.pure);
         let model_transformp6 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0.4, 0.4)))
             .times((Mat4.rotation(.8,-1,0,1)))
             .times(Mat4.scale(.2, .4, .05))
-        this.shapes.cube.draw(context, program_state, model_transformp6, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformp6, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformp7 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0.4, -0.4)))
             .times((Mat4.rotation(.8,1,0,1)))
             .times(Mat4.scale(.2, .4, .05))
-        this.shapes.cube.draw(context, program_state, model_transformp7, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformp7, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformp8 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 1.2, 0)))
             .times(Mat4.scale(.15, .05, .2))
-        this.shapes.cube.draw(context, program_state, model_transformp8, this.materials.cube4);
+        this.shapes.cube.draw(context, program_state, model_transformp8, shadow_pass ? this.materials.cube4 : this.pure);
         let model_transformp9 = Mat4.identity().times(model_transform).times((Mat4.translation(0.12, 1.3, 0)))
             .times(Mat4.scale(.3, .2, .3))
-        this.shapes.cube.draw(context, program_state, model_transformp9, this.materials.cube1);
+        this.shapes.cube.draw(context, program_state, model_transformp9, shadow_pass ? this.materials.cube1 : this.pure);
         let model_transformp10 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 1.33, 0.16)))
             .times(Mat4.scale(.05, .09, .05))
-        this.shapes.cube.draw(context, program_state, model_transformp10, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformp10, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformp11 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 1.33, -0.16)))
             .times(Mat4.scale(.05, .09, .05))
-        this.shapes.cube.draw(context, program_state, model_transformp11, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformp11, shadow_pass ? this.materials.cube2 : this.pure);
     }
 
-    draw_player_blob(context, program_state, model_transform){
+    draw_player_blob(context, program_state, model_transform, shadow_pass){
         let model_transformb1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, 0, 0)))
             .times(Mat4.scale(.4, .35, .4))
-        this.shapes.cube.draw(context, program_state, model_transformb1, this.materials.cube5);
+        this.shapes.cube.draw(context, program_state, model_transformb1, shadow_pass ? this.materials.cube5 : this.pure);
         let model_transformb2 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .3, 0.16)))
             .times(Mat4.scale(.05, .09, .05))
-        this.shapes.cube.draw(context, program_state, model_transformb2, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformb2, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformb3 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .3, -0.16)))
             .times(Mat4.scale(.05, .09, .05))
-        this.shapes.cube.draw(context, program_state, model_transformb3, this.materials.cube2);
+        this.shapes.cube.draw(context, program_state, model_transformb3, shadow_pass ? this.materials.cube2 : this.pure);
         let model_transformb4 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .15, 0.2)))
             .times(Mat4.scale(.05, .06, .07))
-        this.shapes.cube.draw(context, program_state, model_transformb4, this.materials.cube6);
+        this.shapes.cube.draw(context, program_state, model_transformb4, shadow_pass ? this.materials.cube6 : this.pure);
         let model_transformb5 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, .15, -0.2)))
             .times(Mat4.scale(.05, .06, .07))
-        this.shapes.cube.draw(context, program_state, model_transformb5, this.materials.cube6);
+        this.shapes.cube.draw(context, program_state, model_transformb5, shadow_pass ? this.materials.cube6 : this.pure);
     }
 
-    draw_player_dog(context, program_state, model_transform){
+    draw_player_dog(context, program_state, model_transform, shadow_pass){
         let model_transformf1 = Mat4.identity().times(model_transform).times((Mat4.translation(0, .5, 0)))
             .times(Mat4.scale(.6, .4, .4))
-        this.shapes.cube.draw(context, program_state, model_transformf1, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf1, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf2 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 0, 0.3)))
             .times(Mat4.scale(.1, .4, .1))
-        this.shapes.cube.draw(context, program_state, model_transformf2, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf2, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf3 = Mat4.identity().times(model_transform).times((Mat4.translation(-0.4, 0, -0.3)))
             .times(Mat4.scale(.1, .4, .1))
-        this.shapes.cube.draw(context, program_state, model_transformf3, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf3, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf4 = Mat4.identity().times(model_transform).times((Mat4.translation(0.4, 0, -0.3)))
             .times(Mat4.scale(.1, .4, .1))
-        this.shapes.cube.draw(context, program_state, model_transformf4, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf4, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf5 = Mat4.identity().times(model_transform).times((Mat4.translation(-0.4, 0, 0.3)))
             .times(Mat4.scale(.1, .4, .1))
-        this.shapes.cube.draw(context, program_state, model_transformf5, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf5, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf6 = Mat4.identity().times(model_transform).times((Mat4.translation(0.3, 1.2, 0)))
             .times(Mat4.scale(.3, .3, .3))
-        this.shapes.cube.draw(context, program_state, model_transformf6, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf6, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf7 = Mat4.identity().times(model_transform).times((Mat4.translation(0.5, 1.17, 0)))
             .times(Mat4.scale(.3, .1, .15))
-        this.shapes.cube.draw(context, program_state, model_transformf7, this.materials.cube3) //snout
+        this.shapes.cube.draw(context, program_state, model_transformf7, shadow_pass ? this.materials.cube3 : this.pure) //snout
         let model_transformf8 = Mat4.identity().times(model_transform).times((Mat4.translation(0.83, 1.25, 0)))
             .times(Mat4.scale(.06, .06, .06))
-        this.shapes.cube.draw(context, program_state, model_transformf8, this.materials.cube2) //nose
+        this.shapes.cube.draw(context, program_state, model_transformf8, shadow_pass ? this.materials.cube2 : this.pure) //nose
         let model_transformf9 = Mat4.identity().times(model_transform).times((Mat4.translation(-0.7, 1, 0)))
             .times(Mat4.rotation(-.8,0,1,-1))
             .times(Mat4.scale(.1, .25, .1))
-        this.shapes.cube.draw(context, program_state, model_transformf9, this.materials.cube3) //tail
+        this.shapes.cube.draw(context, program_state, model_transformf9, shadow_pass ? this.materials.cube3 : this.pure) //tail
         let model_transformf10 = Mat4.identity().times(model_transform).times((Mat4.translation(0.32, 0.35, 0)))
             .times(Mat4.scale(.3, .3, .3))
-        this.shapes.cube.draw(context, program_state, model_transformf10, this.materials.cube1)
+        this.shapes.cube.draw(context, program_state, model_transformf10, shadow_pass ? this.materials.cube1 : this.pure)
         let model_transformf11 = Mat4.identity().times(model_transform).times((Mat4.translation(0.49, 1.5, 0.3)))
             .times(Mat4.rotation(-0.5,0,1,1))
             .times(Mat4.scale(.05, .15, .15))
-        this.shapes.cube.draw(context, program_state, model_transformf11, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf11, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf12 = Mat4.identity().times(model_transform).times((Mat4.translation(0.49, 1.5, -0.3)))
             .times(Mat4.rotation(-0.6,0,-1,1))
             .times(Mat4.scale(.05, .15, .15))
-        this.shapes.cube.draw(context, program_state, model_transformf12, this.materials.cube3)
+        this.shapes.cube.draw(context, program_state, model_transformf12, shadow_pass ? this.materials.cube3 : this.pure)
         let model_transformf13 = Mat4.identity().times(model_transform).times((Mat4.translation(0.6, 1.3, .17)))
             .times(Mat4.scale(.03, .04, .03))
-        this.shapes.cube.draw(context, program_state, model_transformf13, this.materials.cube2)
+        this.shapes.cube.draw(context, program_state, model_transformf13, shadow_pass ? this.materials.cube2 : this.pure)
         let model_transformf14 = Mat4.identity().times(model_transform).times((Mat4.translation(0.6, 1.3, -.17)))
             .times(Mat4.scale(.03, .04, .03))
-        this.shapes.cube.draw(context, program_state, model_transformf14, this.materials.cube2)
+        this.shapes.cube.draw(context, program_state, model_transformf14, shadow_pass ? this.materials.cube2 : this.pure)
     }
 
     get_rotation_from_forward(forward) {

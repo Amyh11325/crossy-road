@@ -192,7 +192,7 @@ export class Shadow_Demo extends Scene {
         this.shapes.cube.draw(context, program_state, model_trans_wall_1, shadow_pass? this.floor : this.pure);
         this.shapes.cube.draw(context, program_state, model_trans_wall_2, shadow_pass? this.floor : this.pure);
         this.shapes.cube.draw(context, program_state, model_trans_wall_3, shadow_pass? this.floor : this.pure);
-        this.shapes.sphere.draw(context, program_state, model_trans_ball_0, shadow_pass? this.floor : this.pure);
+        this.shapes.cube.draw(context, program_state, model_trans_ball_0, shadow_pass? this.floor : this.pure);
         this.shapes.sphere.draw(context, program_state, model_trans_ball_1, shadow_pass? this.floor : this.pure);
         this.shapes.sphere.draw(context, program_state, model_trans_ball_2, shadow_pass? this.floor : this.pure);
         this.shapes.sphere.draw(context, program_state, model_trans_ball_3, shadow_pass? this.floor : this.pure);
@@ -224,7 +224,7 @@ export class Shadow_Demo extends Scene {
         }
 
         // The position of the light
-        this.light_position = Mat4.rotation(t / 1500, 0, 1, 0).times(vec4(3, 6, 0, 1));
+        this.light_position = Mat4.rotation(t / 1500, 0, 1, 0).times(vec4(3, 16, 0, 1));
         // The color of the light
         this.light_color = color(
             0.667 + Math.sin(t/500) / 3,
