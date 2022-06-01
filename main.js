@@ -273,6 +273,10 @@ export class Main_Scene extends Scene {
             model_transform = model_transform.times(Mat4.scale(1, 0.1, 1));
         }
 
+        // scale the characters rougly to the same size
+        model_transform = model_transform.times(Mat4.scale(Constants.CHARACTER_SCALING[Constants.CHARACTERS.indexOf(this.character)], Constants.CHARACTER_SCALING[Constants.CHARACTERS.indexOf(this.character)], Constants.CHARACTER_SCALING[Constants.CHARACTERS.indexOf(this.character)]))
+            .times(Mat4.translation((Constants.CHARACTER_SCALING[Constants.CHARACTERS.indexOf(this.character)] - 1) / -4, (Constants.CHARACTER_SCALING[Constants.CHARACTERS.indexOf(this.character)] - 1), 0)); // good enough approximation
+
         switch(this.character) {
             case "Snowman":
                 this.draw_player_snowman(context, program_state, model_transform);

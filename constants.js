@@ -3,7 +3,8 @@ export const PLAYABLE_WIDTH = 9; // the number of tiles that are actually usable
 
 export const MAX_SEED = 32; // used for random generation
 
-export const CHARACTERS = ["Snowman", "Chicken", "Penguin", "Blob", "Dog"]
+export const CHARACTERS = ["Snowman", "Chicken", "Penguin", "Blob", "Dog"]; // names of characters
+export const CHARACTER_SCALING = [.75, 1, .5, .75, .55]; // scaling of character models
 
 // percentages add up to 1
 export const ROAD_ROW_PERCENT = .6; // percent of rows that are roads
@@ -25,8 +26,8 @@ export const BACKWARDS_LIMIT = 4; // the number of rows backwards the player can
 // the obstacles here refer to cars
 export const OBSTACLE_WIDTH = 2; // the length of an obstacle on the road
 export const MIN_OBSTACLE_SPACING = 3; // the minimum distance between obstacles
-export const MIN_OBSTACLE_SPEED = .6; // the minimum speed of an obstacle
-export const MAX_OBSTACLE_SPEED = 1.8; // the minimum speed of an obstacle
+export const MIN_OBSTACLE_SPEED = .8; // the minimum speed of an obstacle
+export const MAX_OBSTACLE_SPEED = 2; // the minimum speed of an obstacle
 export const COLLISION_LEEWAY = .2; // amount of leeway allowed before a collision is registered
 
 // blockers are rocks and trees
