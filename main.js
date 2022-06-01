@@ -4,7 +4,7 @@ import * as Constants from "./constants.js"
 import {Color_Phong_Shader, Shadow_Textured_Phong_Shader,
     Depth_Texture_Shader_2D, Buffered_Texture, LIGHT_DEPTH_TEX_SIZE} from './examples/shadow-demo-shaders.js'
 
-const { Vector, Vector3, vec, vec3, vec4, color, hex_color, Shader, Matrix, Mat4, Light, Shape, Material, Scene, Texture } = tiny;
+const { Vector, Vector3, Vector4, vec, vec3, vec4, color, hex_color, Shader, Matrix, Mat4, Light, Shape, Material, Scene, Texture } = tiny;
 const {Cube, Axis_Arrows, Textured_Phong, Phong_Shader, Basic_Shader, Subdivision_Sphere} = defs;
 
 
@@ -218,7 +218,7 @@ export class Main_Scene extends Scene {
 
         this.draw_field(context, program_state, shadow_pass);
         this.draw_player(context, program_state, shadow_pass);
-        this.draw_cars(context, program_state, dt);
+        this.draw_cars(context, program_state, dt, shadow_pass);
         this.check_collisions();
         this.move_camera(context, program_state);
         this.move_light(context, program_state);
@@ -226,7 +226,6 @@ export class Main_Scene extends Scene {
 
     display(context, program_state) {
         this.pass_score_to_dom();
-        const t = program_state.animation_time / 1000, dt = program_state.animation_delta_time / 1000;
         const gl = context.context;
         
         if (!this.init_ok) {
@@ -240,42 +239,27 @@ export class Main_Scene extends Scene {
 
         if (!this.setup) {
             this.camera_setup(context, program_state);
-            //this.lighting_setup(program_state);
+            this.lighting_setup(program_state);
             this.setup = true;
         }
 
-        // let desired_position = this.camera_location.times(Mat4.inverse(Mat4.translation(this.game.score - 1, 0, 0)));
-        //     desired_position = desired_position.map((x, i) => Vector.from(Mat4.inverse(program_state.camera_transform)[i]).mix(x, Constants.CAMERA_SMOOTHING));
-        //     program_state.set_camera((desired_position));
-        // this.light_position = vec4(this.game.player.row_num + 1.25, 4, this.game.player.index - .5, 1);
-        // this.light_position = vec4(this.game.player.row_num + 1.25, 4, this.game.player.index - .5, 1);
-        // this.light_color = color(.973, .957, .89, 1);
-        //this.light_view_target = vec4(this.game.player.row_num, 0, this.game.player.index -, 1);
-        // this.light_field_of_view = 130 * Math.PI / 180;
-        this.light_position = vec4(this.game.player.row_num + Constants.LIGHT_X_SKEW, Constants.LIGHT_Y_SKEW, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2 - 1, 1);
+        this.create_shadows_and_render(context, program_state, gl);
+    }
+
+    pass_score_to_dom() {
+        let score_value = document.querySelector("#score");
+        if (score_value) {
+            score_value.innerHTML = this.game.score;
+        }
+    }
+
+    create_shadows_and_render(context, program_state, gl) {
+        let desired_light_position = vec4(this.game.player.row_num + Constants.LIGHT_X_SKEW, Constants.LIGHT_Y_SKEW, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2 - 1, 1);
+        let light_x = (1 - Constants.LIGHT_SMOOTHING) * this.light_position[0] + Constants.LIGHT_SMOOTHING * desired_light_position[0];
+        this.light_position = vec4(light_x, Constants.LIGHT_Y_SKEW, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2 - 1, 1)
         this.light_color = color(.973, .957, .89, 1);
         this.light_view_target = vec4(this.game.player.row_num + Constants.LIGHT_X_SKEW, 0, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2, 1);
         this.light_field_of_view = 130 * Math.PI / 180;
-        
-        // The position of the light
-        // this.light_position = Mat4.rotation(t / 1500, 0, 1, 0).times(vec4(3, 6, 0, 1));
-        // console.log(this.light_position)
-        // // The color of the light
-        // this.light_color = color(
-        //     0.667 + Math.sin(t/500) / 3,
-        //     0.667 + Math.sin(t/1500) / 3,
-        //     0.667 + Math.sin(t/3500) / 3,
-        //     1
-        // );
-
-        // This is a rough target of the light.
-        // Although the light is point light, we need a target to set the POV of the light
-        // this.light_view_target = vec4(0, 0, 0, 1);
-        // this.light_field_of_view = 130 * Math.PI / 180; // 130 degree
-
-        //program_state.lights = [new Light(this.light_position, this.light_color, 1000)];
-
-        program_state.lights = [new Light(this.light_position, this.light_color, 10000)];
 
         // Step 1: set the perspective and camera to the POV of light
         const light_view_mat = Mat4.look_at(
@@ -302,28 +286,6 @@ export class Main_Scene extends Scene {
         program_state.view_mat = program_state.camera_inverse;
         program_state.projection_transform = Mat4.perspective(Math.PI / 4, context.width / context.height, 0.5, 500);
         this.render_scene(context, program_state, true,true, true);
-
-        // Step 3: display the textures
-        // this.shapes.square_2d.draw(context, program_state,
-        //     Mat4.translation(-.99, .08, 0).times(
-        //     Mat4.scale(0.5, 0.5 * gl.canvas.width / gl.canvas.height, 1)
-        //     ),
-        //     this.depth_tex.override({texture: this.lightDepthTexture})
-        // );
-
-        // this.draw_field(context, program_state);
-        // this.draw_player(context, program_state);
-        // this.draw_cars(context, program_state, dt);
-        // this.check_collisions();
-        // this.move_camera(context, program_state);
-        // this.move_light(context, program_state);
-    }
-
-    pass_score_to_dom() {
-        let score_value = document.querySelector("#score");
-        if (score_value) {
-            score_value.innerHTML = this.game.score;
-        }
     }
 
     camera_setup(context, program_state) { //initial camera setup
@@ -335,6 +297,7 @@ export class Main_Scene extends Scene {
 
     lighting_setup(program_state) {
         program_state.lights = [new Light(vec4(0, 40, Constants.ROW_WIDTH / 2, 1), color(.973, .957, .89, 1), 10000)];
+        this.light_position = vec4(this.game.player.row_num + Constants.LIGHT_X_SKEW, Constants.LIGHT_Y_SKEW, Constants.ROW_WIDTH / 2 - Constants.PLAYABLE_WIDTH / 2 - 1, 1)
     }
 
     draw_field(context, program_state, shadow_pass) { // draw the field from the current game state
@@ -363,11 +326,11 @@ export class Main_Scene extends Scene {
                 break;
             case 12:
                 this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
-                this.draw_tree(context, program_state, row, tile);
+                this.draw_tree(context, program_state, row, tile, shadow_pass);
                 break;
             case 13:
                 this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
-                this.draw_rock(context, program_state, row, tile);
+                this.draw_rock(context, program_state, row, tile, shadow_pass);
                 break;
             default:
                 this.shapes.cube.draw(context, program_state, this.get_field_model_transform(row, tile), this.get_field_material(tile.type));
@@ -668,7 +631,7 @@ export class Main_Scene extends Scene {
         }
     }
 
-    draw_cars(context, program_state, dt) { // draw and move the cars per row
+    draw_cars(context, program_state, dt, shadow_pass) { // draw and move the cars per row
         (this.game.field.rows).forEach(row => {
             (row.car_array.cars).forEach(car => {
                 let model_transform_car_body = Mat4.identity().times(Mat4.translation(row.row_num, 1 - .2, car.position))
@@ -683,12 +646,12 @@ export class Main_Scene extends Scene {
                     .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
                 let model_transform_wheel4 = Mat4.identity().times(Mat4.translation(row.row_num + Constants.CAR_BODY_WIDTH * .8, .5 + Constants.WHEEL_DIAMETER, car.position - Constants.OBSTACLE_WIDTH / 2 + Constants.WHEEL_OFFSET))
                     .times(Mat4.scale(Constants.WHEEL_WIDTH, Constants.WHEEL_DIAMETER, Constants.WHEEL_DIAMETER));
-                this.shapes.cube.draw(context, program_state, model_transform_car_body, this.materials.car.override({color: hex_color(car.color)}));
-                this.shapes.cube.draw(context, program_state, model_transform_car_top, this.materials.car.override({color: hex_color(car.color)}));
-                this.shapes.cube.draw(context, program_state, model_transform_wheel1, this.materials.tire);
-                this.shapes.cube.draw(context, program_state, model_transform_wheel2, this.materials.tire);
-                this.shapes.cube.draw(context, program_state, model_transform_wheel3, this.materials.tire);
-                this.shapes.cube.draw(context, program_state, model_transform_wheel4, this.materials.tire);
+                this.shapes.cube.draw(context, program_state, model_transform_car_body, shadow_pass ? this.materials.car.override({color: hex_color(car.color)}) : this.pure);
+                this.shapes.cube.draw(context, program_state, model_transform_car_top, shadow_pass ? this.materials.car.override({color: hex_color(car.color)}) : this.pure);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel1, shadow_pass ? this.materials.tire : this.pure);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel2, shadow_pass ? this.materials.tire : this.pure);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel3, shadow_pass ? this.materials.tire : this.pure);
+                this.shapes.cube.draw(context, program_state, model_transform_wheel4, shadow_pass ? this.materials.tire : this.pure);
                 car.position = (car.position + (dt * row.car_array.direction * row.car_array.speed)) % Constants.ROW_WIDTH;
                 if (car.position < 0) {
                     car.position = car.position + Constants.ROW_WIDTH;
@@ -697,20 +660,20 @@ export class Main_Scene extends Scene {
         });
     }
 
-    draw_tree(context, program_state, row, tile) {
+    draw_tree(context, program_state, row, tile, shadow_pass=true) {
         let model_transform_trunk = Mat4.identity().times(Mat4.translation(row.row_num, 1, tile.index))
             .times(Mat4.scale(Constants.TREE_TRUNK_WIDTH, .4, Constants.TREE_TRUNK_WIDTH));
-        this.shapes.cube.draw(context, program_state, model_transform_trunk, this.materials.tree_trunk);
+        this.shapes.cube.draw(context, program_state, model_transform_trunk, shadow_pass ? this.materials.tree_trunk : this.pure);
         let model_transform_leaves = Mat4.identity().times(Mat4.translation(row.row_num, Constants.TREE_LEAVES_BASE_HEIGHT, tile.index))
             .times(Mat4.scale(Constants.TREE_LEAVES_WIDTH, .4 + tile.seed / Constants.MAX_SEED * Constants.TREE_HEIGHT_MULTIPLIER, Constants.TREE_LEAVES_WIDTH))
             .times(Mat4.translation(0, 1, 0));
-        this.shapes.cube.draw(context, program_state, model_transform_leaves, this.materials.tree_leaves);
+        this.shapes.cube.draw(context, program_state, model_transform_leaves, shadow_pass ? this.materials.tree_leaves : this.pure);
     }
 
-    draw_rock(context, program_state, row, tile) {
+    draw_rock(context, program_state, row, tile, shadow_pass) {
         let model_transform_rock = Mat4.identity().times(Mat4.translation(row.row_num, .8, tile.index))
             .times(Mat4.scale(Constants.ROCK_WIDTH, Constants.ROCK_HEIGHT, Constants.ROCK_WIDTH));
-        this.shapes.cube.draw(context, program_state, model_transform_rock, this.materials.rock);
+        this.shapes.cube.draw(context, program_state, model_transform_rock, shadow_pass ? this.materials.rock : this.pure);
     }
 
     check_collisions() {

@@ -64,5 +64,6 @@ export const CAMERA_PERSPECTIVE = "crossy" // "crossy": diagonal camera, "flat":
 export const CAMERA_SMOOTHING = .025; // smoothing for camera movement, smaller means more smoothing
 export const LIGHT_X_SKEW = 1;
 export const LIGHT_Y_SKEW = 6;
+export const LIGHT_SMOOTHING = .15;
 
 export const JUMP_TIME = 0.4;
