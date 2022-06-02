@@ -146,8 +146,8 @@ export class Main_Scene extends Scene {
         this.key_triggered_button("Move Backwards", ["s"], this.move_backward, "#757880");
         this.key_triggered_button("Move Left", ["a"], this.move_left, "#757880");
         this.key_triggered_button("Move Right", ["d"], this.move_right, "#757880");
-        this.key_triggered_button("Restart", ["r"], this.restart_game, "#757880");
-        this.key_triggered_button("Change Character", ["c"], this.change_character, "#757880");
+        this.key_triggered_button("Restart", ["r"], this.restart_game, "#FF4444");
+        this.key_triggered_button("Change Character", ["c"], this.change_character, "#3595F0");
     }
 
     move_forward() { // forward callback

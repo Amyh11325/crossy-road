@@ -51,6 +51,7 @@ export const CAR_PALETTES = [
     ["#BBE5ED","#BFBCCB","#B399A2","#986C6A","#784F41"], // copper
     ["#84DCC6","#A5FFD6","#FFFFFF","#FFA69E","#FF686B"], // watermelon
     ["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"], // all white
+    ["#B0D0D3","#C08497","#F7AF9D","#F7E3AF","#F3EEC3"], // easter
     //["#","#","#","#","#"],
 ]
 export const CAR_BODY_WIDTH = .35; // the width of the car
