@@ -6,6 +6,27 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Press+Start+2P&display=swap" rel="stylesheet">
+<audio id="ambient">
+    <source src="ambient.mp3" type="audio/mp3">
+</audio>
+<audio id="highway">
+    <source src="highway.mp3" type="audio/mp3">
+</audio>
+<audio id="hop">
+    <source src="hop.wav" type="audio/wav">
+</audio>
+<audio id="restart">
+    <source src="restart.wav" type="audio/wav">
+</audio>
+<audio id="switch">
+    <source src="switch.wav" type="audio/wav">
+</audio>
+<audio id="squeak1">
+    <source src="squeak1.wav" type="audio/wav">
+</audio>
+<audio id="squeak2">
+    <source src="squeak2.wav" type="audio/wav">
+</audio>
 <head>
     <meta charset="UTF-8"/>
     <link href="assets/fav.ico" rel="icon">
@@ -107,6 +128,26 @@
 <script type=module>
     // ********************* THE ENTRY POINT OF YOUR WHOLE PROGRAM STARTS HERE *********************
     // Indicate which element on the page you want the Canvas_Widget to replace with a 3D WebGL area:
+    import * as Constants from "./constants.js"
+
+    let ambient_audio = document.getElementById("ambient");
+    let highway_audio = document.getElementById("highway");
+    ambient_audio.volume = Constants.AMBIENT_VOLUME;
+    ambient_audio.loop = true;
+    highway_audio.volume = Constants.HIGHWAY_VOLUME;
+    highway_audio.loop = true;
+    document.body.addEventListener("keydown", function() {
+        ambient_audio.play();
+        highway_audio.play();
+    })
+    // ambient_audio.autoplay = true;
+    // ambient_audio.muted = "muted";
+    // ambient_audio.loop = true;
+    // ambient_audio.volume = .3;
+    // ambient_audio.play();
+
+    //let highway_audio = document.getElementById("highway");
+
     const element_to_replace = document.querySelector("#main-canvas");
     import {Default_Scene, Additional_Scenes, Canvas_Widget} from './main-scene.js';
     // Import the file that defines a scene.

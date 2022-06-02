@@ -49,6 +49,19 @@ export class Main_Scene extends Scene {
             chicken_eye: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: 1, color: hex_color("#000000"), smoothness: 64}),
         };
 
+        this.hop_audio = document.getElementById("hop");
+        this.hop_audio.volume = Constants.HOP_VOLUME;
+        this.restart_audio = document.getElementById("restart");
+        this.restart_audio.volume = Constants.RESTART_VOLUME;
+        this.switch_audio = document.getElementById("switch");
+        this.switch_audio.volume = Constants.SWITCH_VOLUME;
+        this.squeak1_audio = document.getElementById("squeak1");
+        this.squeak1_audio.volume = Constants.SQUEAK1_VOLUME;
+        this.squeak2_audio = document.getElementById("squeak2");
+        this.squeak2_audio.volume = Constants.SQUEAK2_VOLUME;
+
+        this.is_gameover = false;
+
         this.pure = new Material(new Color_Phong_Shader(), {});
         this.light_src = new Material(new Phong_Shader(), {
             color: color(.973, .957, .89, 1), ambient: 1, diffusivity: 0, specularity: 0
@@ -142,6 +155,7 @@ export class Main_Scene extends Scene {
             this.game.player.forward = [1, 0, 0];
             if (this.check_movable("forward")) {
                 console.log("forward");
+                this.play_hop_sound();
                 this.game.player.jump = true;
                 this.game.player.row_num++;
                 if (this.game.score < this.game.player.row_num) { // moving past the best score
@@ -157,6 +171,7 @@ export class Main_Scene extends Scene {
             this.game.player.forward = [-1, 0, 0];
             if (this.check_movable("backward")) {
                 console.log("backwards");
+                this.play_hop_sound();
                 this.game.player.jump = true;
                 this.game.player.row_num--;
                 if (this.game.score - this.game.player.row_num > Constants.BACKWARDS_LIMIT) {
@@ -171,6 +186,7 @@ export class Main_Scene extends Scene {
             this.game.player.forward = [0, 0, -1];
             if (this.check_movable("left")) {
                 console.log("left");
+                this.play_hop_sound();
                 this.game.player.jump = true;
                 this.game.player.index--;
                 this.game.player.jump = true;
@@ -183,6 +199,7 @@ export class Main_Scene extends Scene {
             this.game.player.forward = [0, 0, 1];
             if (this.check_movable("right")) {
                 console.log("right");
+                this.play_hop_sound();
                 this.game.player.jump = true;
                 this.game.player.index++;
                 this.game.player.jump = true;
@@ -190,22 +207,44 @@ export class Main_Scene extends Scene {
         }
     }
 
+    play_hop_sound() {
+        this.hop_audio.play();
+    }
+
     restart_game() {
         this.setup = false;
+        this.is_gameover = false;
         this.game.player.gameover = false;
         let gameover_div = document.querySelector("#gameover-overlay");
         gameover_div.style.display = "none";
+        this.restart_audio.play();
         this.game = new Game();
     }
 
     set_gameover() {
-        this.game.player.gameover = true;
-        let gameover_div = document.querySelector("#gameover-overlay");
-        gameover_div.style.display = "block";
+        if (!this.is_gameover) {
+            this.is_gameover = true;
+            this.game.player.gameover = true;
+            this.play_gameover_audio();
+            let gameover_div = document.querySelector("#gameover-overlay");
+            gameover_div.style.display = "block";
+        }
+    }
+
+    play_gameover_audio() {
+        switch(this.character) {
+            case "Chicken":
+                this.squeak1_audio.play();
+                break;
+            default:
+                this.squeak2_audio.play();
+                break;
+        }
     }
 
     change_character() { // character change callback
         if (!this.game.player.gameover) {
+            this.switch_audio.play();
             let character_index = Constants.CHARACTERS.indexOf(this.character);
             this.character = Constants.CHARACTERS[(character_index + 1) % Constants.CHARACTERS.length];
         }

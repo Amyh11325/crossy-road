@@ -67,3 +67,11 @@ export const LIGHT_Y_SKEW = 6;
 export const LIGHT_SMOOTHING = .15;
 
 export const JUMP_TIME = 0.4;
+
+export const HOP_VOLUME = .25;
+export const RESTART_VOLUME = .5;
+export const SWITCH_VOLUME = .5;
+export const AMBIENT_VOLUME = .5;
+export const HIGHWAY_VOLUME = .1;
+export const SQUEAK1_VOLUME = .4;
+export const SQUEAK2_VOLUME = .5;
