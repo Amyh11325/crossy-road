@@ -93,17 +93,17 @@ const Controls_Widget = widgets.Controls_Widget =
         // Scene object, each providing interactive elements such as buttons with key
         // bindings, live readouts of Scene data members, etc.
         constructor(element, scenes) {
-            const rules = [".controls-widget * { font-family: monospace }",
-                ".controls-widget div { background: White }",
+            const rules = [".controls-widget * { font-family: Press Start 2P, cursive }",
+                ".controls-widget div { background: White; margin-top: 25px; height: 100%}",
                 ".controls-widget table { border-collapse: collapse; display:block; overflow-x: auto; table-layout: fixed;}",
-                ".controls-widget table.control-box { width: 1080px; border:1px; margin:0; max-height:380px; " +
-                "transition:.5s; overflow-y:scroll; background:white }",
+                ".controls-widget table.control-box { width: 1080px; margin:0; max-height:380px; " +
+                "transition:.5s;}",
                 ".controls-widget table.control-box:hover { max-height:500px }",
-                ".controls-widget table.control-box td { overflow:hidden; border:1px; background:Black; border-radius:10px; width: 540px;}",
-                ".controls-widget table.control-box td .control-div { background: White; height:338px; padding: 5px 5px 5px 30px; }",
-                ".controls-widget table.control-box td * { background:transparent }",
+                ".controls-widget table.control-box td { overflow:hidden; width: 100%;}",
+                ".controls-widget table.control-box td .control-div { height:100%; padding: 5px 5px 5px 5px; display: flex;}",
+                ".controls-widget table.control-box td * { background: white; box-shadow: 0 0  10px -5px black;}",
                 ".controls-widget table.control-box .control-div td { border-radius:unset }",
-                ".controls-widget table.control-box .control-title { padding:7px 40px; color:white; background:#252424;}",
+                ".controls-widget table.control-box .control-title { padding:7px 40px; color:white; background:#252424; display: none}",
                 ".controls-widget *.live_string { display:inline-block; background:unset }",
                 ".dropdown { display:inline-block }",
                 ".dropdown-content { display:inline-block; transition:.2s; transform: scaleY(0); overflow:hidden; position: absolute; \
@@ -111,8 +111,8 @@ const Controls_Widget = widgets.Controls_Widget =
                                       border-radius:10px }",
                 ".dropdown-content a { color: black; padding: 4px 4px; display: block }",
                 ".dropdown a:hover { background: #f1f1f1 }",
-                ".controls-widget button { background: #303030; color: white; padding: 3px; border-radius:5px; \
-                                           transition: background .3s, transform .3s }",
+                ".controls-widget button { background: #303030; color: white; padding: 3px; margin: 5px 15px; border-radius: 5px;\
+                                           transition: background .3s, transform .3s}",
                 ".controls-widget button:hover, button:focus { transform: scale(1.1); color:#FFFFFF }",
                 ".link { text-decoration:underline; cursor: pointer }",
                 ".show { transform: scaleY(1); height:200px; overflow:auto }",

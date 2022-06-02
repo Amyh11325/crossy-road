@@ -1400,6 +1400,7 @@ const Scene = tiny.Scene =
             // function/method of a Scene.  Optional release callback as well.
             const button = parent.appendChild(document.createElement("button"));
             button.default_color = button.style.backgroundColor = color;
+            button.style.padding = "8px 15px";
             const press = () => {
                     Object.assign(button.style, {
                         'background-color': color,

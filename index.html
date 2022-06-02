@@ -15,6 +15,7 @@
     body {
         background-color: #34d1f0;
         font-family: 'Press Start 2P', cursive;
+        padding-bottom: 50px;
     }
     #logo {
         width: 100%;
@@ -30,9 +31,9 @@
         position: relative;
     }
     .controls-widget {
-        height: 0px;
         visibility: visible;
-        margin-top: 50px;
+        margin-top: 0px;
+        height: 100%;
     }
     .logo-wrapper {
         display: flex;
@@ -64,15 +65,24 @@
     }
     #gameover-overlay {
         position: absolute;
-        left: 15%;
-        top: 30%;
+        width: 100%;
+        height: 600px;
+        backdrop-filter: blur(1.5px) grayscale(100%);
+        display: none;
     }
     #gameover {
+        position: relative;
         font-size: 80px;
         color: azure;
         text-shadow: 0 0 10px black;
         text-align: center;
-        display: none;
+        top: 30%;
+    }
+    button {
+        font-family: "Press Start 2P", cursive;
+        font-size: 10px;
+        margin: 0px 10px;
+        border-width: 0px;
     }
 </style>
 <body>
@@ -85,11 +95,11 @@
 </div>
 <div class="wrapper">
     <div class="canvas-widget" id="main-canvas">
-        <div id="score-overlay">
-            <div id="score">0</div>
-        </div>
         <div id="gameover-overlay">
             <div id="gameover">GAME OVER</div>
+        </div>
+        <div id="score-overlay">
+            <div id="score">0</div>
         </div>
     </div>
 </div>

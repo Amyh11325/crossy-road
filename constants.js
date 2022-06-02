@@ -3,8 +3,8 @@ export const PLAYABLE_WIDTH = 9; // the number of tiles that are actually usable
 
 export const MAX_SEED = 32; // used for random generation
 
-export const CHARACTERS = ["Snowman", "Chicken", "Penguin", "Blob", "Dog"]; // names of characters
-export const CHARACTER_SCALING = [.75, 1, .5, .75, .55]; // scaling of character models
+export const CHARACTERS = ["Chicken", "Snowman", "Penguin", "Blob", "Dog"]; // names of characters
+export const CHARACTER_SCALING = [1, .75, .5, .75, .55]; // scaling of character models
 
 // percentages add up to 1
 export const ROAD_ROW_PERCENT = .6; // percent of rows that are roads

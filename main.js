@@ -129,12 +129,12 @@ export class Main_Scene extends Scene {
     }
 
     make_control_panel() {
-        this.key_triggered_button("Move Forward", ["w"], this.move_forward);
-        this.key_triggered_button("Move Backwards", ["s"], this.move_backward);
-        this.key_triggered_button("Move Left", ["a"], this.move_left);
-        this.key_triggered_button("Move Right", ["d"], this.move_right);
-        this.key_triggered_button("Restart", ["r"], this.restart_game);
-        this.key_triggered_button("Change Character", ["c"], this.change_character);
+        this.key_triggered_button("Move Forward", ["w"], this.move_forward, "#757880");
+        this.key_triggered_button("Move Backwards", ["s"], this.move_backward, "#757880");
+        this.key_triggered_button("Move Left", ["a"], this.move_left, "#757880");
+        this.key_triggered_button("Move Right", ["d"], this.move_right, "#757880");
+        this.key_triggered_button("Restart", ["r"], this.restart_game, "#757880");
+        this.key_triggered_button("Change Character", ["c"], this.change_character, "#757880");
     }
 
     move_forward() { // forward callback
@@ -193,14 +193,14 @@ export class Main_Scene extends Scene {
     restart_game() {
         this.setup = false;
         this.game.player.gameover = false;
-        let gameover_div = document.querySelector("#gameover");
+        let gameover_div = document.querySelector("#gameover-overlay");
         gameover_div.style.display = "none";
         this.game = new Game();
     }
 
     set_gameover() {
         this.game.player.gameover = true;
-        let gameover_div = document.querySelector("#gameover");
+        let gameover_div = document.querySelector("#gameover-overlay");
         gameover_div.style.display = "block";
     }
 
@@ -424,7 +424,7 @@ export class Main_Scene extends Scene {
                 this.draw_player_dog(context, program_state, model_transform, shadow_pass);
                 break;
             default:
-                this.draw_player_snowman(context, program_state, model_transform, shadow_pass);
+                this.draw_player_chicken(context, program_state, model_transform, shadow_pass);
                 break;
         }
     }
