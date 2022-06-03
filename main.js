@@ -149,7 +149,7 @@ export class Main_Scene extends Scene {
         this.key_triggered_button("Move Right", ["d"], this.move_right, "#757880");
         this.key_triggered_button("Restart", ["r"], this.restart_game, "#FF4444");
         this.key_triggered_button("Change Character", ["c"], this.change_character, "#3595F0");
-        this.key_triggered_button("Toggle Shadows", ["x"], this.toggle_shadows, "#f7e53b")
+        this.key_triggered_button("Toggle Shadows", ["x"], this.toggle_shadows, "#ffcc00")
     }
 
     move_forward() { // forward callback
