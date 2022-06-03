@@ -20,6 +20,7 @@ export class Main_Scene extends Scene {
             cube: new defs.Cube,
         };
 
+        this.shadows = true;
         this.materials = {
             generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
             road: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#555560"), smoothness: 64}),
@@ -148,6 +149,7 @@ export class Main_Scene extends Scene {
         this.key_triggered_button("Move Right", ["d"], this.move_right, "#757880");
         this.key_triggered_button("Restart", ["r"], this.restart_game, "#FF4444");
         this.key_triggered_button("Change Character", ["c"], this.change_character, "#3595F0");
+        this.key_triggered_button("Toggle Shadows", ["x"], this.toggle_shadows, "#f7e53b")
     }
 
     move_forward() { // forward callback
@@ -821,6 +823,69 @@ export class Main_Scene extends Scene {
                 return this.materials.grass_bound;
             default:
                 return this.materials.generic;
+        }
+    }
+
+    toggle_shadows() {
+        this.shadows = !this.shadows;
+        if (this.shadows) {
+            this.materials = {
+                generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
+                road: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#555560"), smoothness: 64}),
+                road_bound: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#454555"), smoothness: 64}),
+                grass: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .7, diffusivity: .4, specularity: 0, color: hex_color("#95e06c"), smoothness: 64}),
+                grass_bound: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .3, specularity: 0, color: hex_color("#6CB047"), smoothness: 64}),
+                tree_trunk: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#653E04"), smoothness: 64}),
+                tree_leaves: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#459D2C"), smoothness: 64}),
+                rock: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#828B90"), smoothness: 64}),
+    
+                cube: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7"), smoothness: 64}),
+                cube1: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
+                cube1: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
+                cube2: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000"), smoothness: 64}),
+                cube3: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e"), smoothness: 64}),
+                cube4: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffda03"), smoothness: 64}),
+                cube5: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#06c4ef"), smoothness: 64}),
+                cube6: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#e087c2"), smoothness: 64}),
+                sphere: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c"), smoothness: 64}),
+    
+                car: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
+                tire: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
+    
+                chicken_bod: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#F7EBE4"), smoothness: 64}),
+                chicken_orange: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF6600"), smoothness: 64}),
+                chicken_red: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF0044"), smoothness: 64}),
+                chicken_eye: new Material(new Shadow_Textured_Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: 1, color: hex_color("#000000"), smoothness: 64}),
+            };
+        } else {
+            this.materials = {
+                generic: new Material(new defs.Phong_Shader(), {ambient: 1, color: hex_color("#808080")}),
+                road: new Material(new defs.Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#555560"), smoothness: 64}),
+                road_bound: new Material(new defs.Phong_Shader(1), {ambient: .6, diffusivity: .2, specularity: 0, color: hex_color("#454555"), smoothness: 64}),
+                grass: new Material(new defs.Phong_Shader(1), {ambient: .7, diffusivity: .4, specularity: 0, color: hex_color("#95e06c"), smoothness: 64}),
+                grass_bound: new Material(new defs.Phong_Shader(1), {ambient: .6, diffusivity: .3, specularity: 0, color: hex_color("#6CB047"), smoothness: 64}),
+                tree_trunk: new Material(new defs.Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#653E04"), smoothness: 64}),
+                tree_leaves: new Material(new defs.Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#459D2C"), smoothness: 64}),
+                rock: new Material(new defs.Phong_Shader(1), {ambient: .6, diffusivity: .4, specularity: 0, color: hex_color("#828B90"), smoothness: 64}),
+    
+                cube: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#a9fff7"), smoothness: 64}),
+                cube1: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
+                cube1: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffffff"), smoothness: 64}),
+                cube2: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#000000"), smoothness: 64}),
+                cube3: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee993e"), smoothness: 64}),
+                cube4: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ffda03"), smoothness: 64}),
+                cube5: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#06c4ef"), smoothness: 64}),
+                cube6: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#e087c2"), smoothness: 64}),
+                sphere: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#0da99c"), smoothness: 64}),
+    
+                car: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#ee9866")}),
+                tire: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: 0, specularity: 0, color: hex_color("#101015")}),
+    
+                chicken_bod: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#F7EBE4"), smoothness: 64}),
+                chicken_orange: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF6600"), smoothness: 64}),
+                chicken_red: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: .6, color: hex_color("#FF0044"), smoothness: 64}),
+                chicken_eye: new Material(new defs.Phong_Shader(1), {ambient: .8, diffusivity: .6, specularity: 1, color: hex_color("#000000"), smoothness: 64}),
+            };
         }
     }
 
