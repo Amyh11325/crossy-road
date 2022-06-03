@@ -8,9 +8,18 @@
 ### What it does
 A clone of the mobile app Crossy Road, the player attempts to move forward while avoiding cars.
 The game lasts infinitely, until the player dies. A score is shown in the top right corner.
+Input buttons are shown along the bottom of the game and are as follows:
+- w: Move Forward
+- s: Move Backwards
+- a: Move Left
+- r: Restart Game
+- c: Change Character
+- x: Toggle Shadows
 
 ### Features
 1. Collision Detection
 2. Shadows
 3. Sound effects
-4. Multiple, swappable player character modles
+4. Multiple, swappable player character models
+5. Game over screen
+6. Player hopping and turning animations
