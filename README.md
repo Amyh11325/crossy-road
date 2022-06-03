@@ -3,6 +3,7 @@
 ### How To Run
 1. In a Terminal, change into this project's directory and run `python server.py`
 2. In Chrome, go to `localhost:8000`. The game should load like below:
+![game image](https://github.com/Amyh11325/crossy-road/blob/master/Screen%20Shot%202022-06-02%20at%207.02.42%20PM.png)
 
 ### What it does
 A clone of the mobile app Crossy Road, the player attempts to move forward while avoiding cars.
